@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<link rel="stylesheet" href="component/css/index.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabla de Empleados</title>
+</head>
+<body>
+
+    <h1>Listado de Empleados</h1>
+
+    <div class="tabla-container">
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>Suscriptor</th>
+                    <th>Nombre Completo</th>
+                    <th>Cédula</th>
+                    <th>Objeto del Contrato</th>
+                </tr>
+            </thead>
+            <tbody id="tablaEmpleados"></tbody>
+        </table>
+        <select class="suscriptor">
+            <option value="">Seleccione...</option>
+            <option value="ALCALDIA">Alcaldía Municipal</option>
+            <option value="PLANEACION">Secretaría de Planeación</option>
+            <option value="HACIENDA">Secretaría de Hacienda</option>
+        </select>
+
+    </div>
+
+<script src="component/js/index.js"></script>
+</body>
+</html>
