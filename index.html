@@ -1,35 +1,88 @@
 <!DOCTYPE html>
 <html lang="es">
-<link rel="stylesheet" href="component/css/index.css">
 <head>
     <meta charset="UTF-8">
     <title>Tabla de Empleados</title>
+    <link rel="stylesheet" href="component/css/index.css">
 </head>
 <body>
-
-    <h1>Listado de Empleados</h1>
-
-    <div class="tabla-container">
-        <table border="1" width="100%">
+    <div class="container">
+        <h1>Generador de Contratos de Prestación de Servicios</h1>
+        
+        <!-- Campo de búsqueda -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Buscar por nombre (mínimo 3 letras)..."
+            >
+            <span id="searchInfo" class="search-info"></span>
+        </div>
+        
+        <table>
             <thead>
                 <tr>
-                    <th>Suscriptor</th>
+                    <th>Número de Cedula</th>
                     <th>Nombre Completo</th>
-                    <th>Cédula</th>
-                    <th>Objeto del Contrato</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="tablaEmpleados"></tbody>
         </table>
-        <select class="suscriptor">
-            <option value="">Seleccione...</option>
-            <option value="ALCALDIA">Alcaldía Municipal</option>
-            <option value="PLANEACION">Secretaría de Planeación</option>
-            <option value="HACIENDA">Secretaría de Hacienda</option>
-        </select>
-
     </div>
 
-<script src="component/js/index.js"></script>
+
+
+<!--MODAL PARA EXTRAER DATO Y GENERAR -->
+<!-- Modal -->
+<div id="modalEmpleado" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Generar Contrato</h2>
+        
+        <!-- Información del empleado seleccionado (NO EDITABLE) -->
+        <div class="info-empleado">
+            <div class="info-item">
+                <label>Número de Cédula:</label>
+                <span id="modalCedula"></span>
+            </div>
+            <div class="info-item">
+                <label>Nombre Completo:</label>
+                <span id="modalNombre"></span>
+            </div>
+        </div>
+        
+        <!-- Campos del formulario -->
+        <div class="form-group">
+            <label for="suscriptorSelect">Supervisor:</label>
+            <select id="suscriptorSelect" class="form-control">
+                <option value="">Seleccione...</option>
+                <option value="1">GERALDINES GONZALEZ CERVANTES</option>
+                <option value="2">Colocar Supervisor</option>
+                <option value="3">Colocar Supervisor</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="numeroContratoInput">Número de Contrato:</label>
+            <input type="text" id="numeroContratoInput" class="form-control" placeholder="Ingrese el número de contrato" />
+        </div>
+
+        <div class="form-group">
+            <label for="objetoContratoSelect">Objeto del Contrato:</label>
+            <select id="objetoContratoSelect" class="form-control">
+                <option value="">Seleccione...</option>
+                <option value="1">SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERIA</option>
+            </select>
+        </div>
+        
+        <button id="btnGenerarContrato">Generar Contrato</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="../component/js/index.js"></script>   s
 </body>
 </html>
