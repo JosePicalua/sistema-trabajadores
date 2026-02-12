@@ -1161,22 +1161,19 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
         return textRuns;
     }
 
+
     // 8. Preparar configuración de sección
-    const sectionConfig = {
+    let sectionConfig = {  // 
         properties: {
             page: {
                 size: { 
                     width: docx.convertInchesToTwip(8.5), 
-                    height: docx.convertInchesToTwip(14) // La hoja sigue siendo larga
+                    height: docx.convertInchesToTwip(14)
                 },
                 margin: { 
-                    top: docx.convertInchesToTwip(2), // Espacio para el encabezado
+                    top: docx.convertInchesToTwip(2),
                     right: docx.convertInchesToTwip(1), 
                     left: docx.convertInchesToTwip(1),
-                    
-                    // 🔹 AQUÍ ESTÁ EL TRUCO:
-                    // Ponemos 3 pulgadas de margen abajo. 
-                    // Así el texto "choca" con el límite a las 11 pulgadas.
                     bottom: docx.convertInchesToTwip(3) 
                 }
             }
