@@ -311,18 +311,24 @@ function convertirNumeroALetras(num) {
 
 
     function gisLoaded() {
+        // Intentar obtener CLIENT_ID de cookie si aún no está en memoria
+        if (!CLIENT_ID) {
+            CLIENT_ID = API_CONFIG.getClientId();
+        }
+
         if (!CLIENT_ID) {
             console.warn('⚠️ CLIENT_ID no disponible aún');
             return;
         }
-        
+
         tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: CLIENT_ID,
             scope: SCOPES,
-            callback: '', // Se define en cada uso
+            callback: '',
         });
+
         gisInited = true;
-        console.log('✓ Google Identity Services inicializado');
+        console.log('✓ Google Identity Services inicializado con CLIENT_ID:', CLIENT_ID);
     }
 
     // ==================== CARGAR DATOS ====================
@@ -720,54 +726,42 @@ window.addEventListener('load', async () => {
     let savedClientId = API_CONFIG.getClientId();
 
     if (!savedKey) {
-        mostrarMensaje('Configuración requerida: API Key de Google Sheets', 'warning');
         setTimeout(() => {
-            const userApiKey = prompt("🔑 Pega tu API KEY de Google Cloud (empieza con AIza...):");
+            const userApiKey = prompt("🔑 Pega tu API KEY (empieza con AIza...):");
             if (userApiKey && userApiKey.trim()) {
                 API_CONFIG.setApiKey(userApiKey.trim());
             } else {
-                mostrarMensaje('Sin API Key. Recarga la página para configurarla.', 'warning');
+                mostrarMensaje('Sin API Key.', 'warning');
                 return;
             }
-
             const userClientId = prompt("🆔 Pega tu CLIENT ID (.apps.googleusercontent.com):");
             if (userClientId && userClientId.trim()) {
                 API_CONFIG.setClientId(userClientId.trim());
             } else {
-                mostrarMensaje('Sin Client ID. Recarga la página para configurarla.', 'warning');
+                mostrarMensaje('Sin Client ID.', 'warning');
                 return;
             }
-
-            location.reload(); // ← recarga con todo ya guardado en cookies
+            location.reload();
         }, 300);
 
     } else if (!savedClientId) {
-        // Tiene API Key pero le falta el Client ID
         setTimeout(() => {
             const userClientId = prompt("🆔 Pega tu CLIENT ID (.apps.googleusercontent.com):");
             if (userClientId && userClientId.trim()) {
                 API_CONFIG.setClientId(userClientId.trim());
                 location.reload();
-            } else {
-                mostrarMensaje('Sin Client ID. Recarga la página para configurarla.', 'warning');
             }
         }, 300);
 
     } else {
-        // ✅ Todo listo — arrancar normalmente
+        // ✅ Todo listo
         API_KEY = savedKey;
         CLIENT_ID = savedClientId;
         arrancarConApiKey(savedKey);
-
-        // Inicializar GIS cuando Google esté disponible
-        const esperarGIS = setInterval(() => {
-            if (typeof google !== 'undefined' && google.accounts) {
-                clearInterval(esperarGIS);
-                gisLoaded();
-            }
-        }, 100);
+        // ❌ NO llamar gisLoaded() aquí — el onload del script se encarga
     }
 });
+
 
 function mostrarLoader(mensaje) {
     const loader = document.getElementById('loaderDrive');
