@@ -68,7 +68,7 @@
         
         <!-- Campos del formulario -->
         <div class="form-group">
-            <label for="suscriptorSelect">Supervisor:</label>
+            <label for="suscriptorSelect">Designado a Contrato:</label>
             <select id="suscriptorSelect" class="form-control">
                 <option value="">Seleccione...</option>
                 <option value="1">RONALD DARIO FLOREZ SIERRA</option>
@@ -153,6 +153,63 @@
         
         <button id="btnGenerarContrato">Generar Contrato</button>
     </div>
+</div>
+
+<!-- ── OVERLAY ── -->
+<div id="modalSupervisor" style="display:none;">
+  <div class="msc-overlay">
+
+    <div class="msc-card">
+
+      <!-- HEADER -->
+      <div class="msc-header">
+        <button class="msc-close" onclick="document.getElementById('modalSupervisor').style.display='none'">✕</button>
+        <div class="msc-badge">📋 Paso 2 de 2</div>
+        <h2>Designar Supervisor</h2>
+        <p>Seleccione el supervisor asignado al contrato generado</p>
+      </div>
+
+      <!-- BODY -->
+      <div class="msc-body">
+
+        <label class="msc-label" for="suscriptorSelect_Supervidor">
+          Supervisor del Contrato
+        </label>
+
+        <div class="msc-select-wrapper">
+          <select id="suscriptorSelect_Supervidor" class="msc-select">
+            <option value="">Seleccione un supervisor...</option>
+            <option value="1">RONALD DARIO FLOREZ SIERRA</option>
+            <option value="2">GERALDINES GONZALEZ CERVANTES</option>
+            <option value="3">Colocar Supervisor</option>
+          </select>
+          <span class="msc-select-arrow">▾</span>
+        </div>
+
+        <!-- Preview del supervisor seleccionado -->
+        <div class="msc-preview" id="mscPreview" style="display:none;">
+          <div class="msc-preview-icon">👤</div>
+          <div>
+            <div class="msc-preview-nombre" id="mscPreviewNombre"></div>
+            <div class="msc-preview-cedula" id="mscPreviewCedula"></div>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="msc-footer">
+          <button class="msc-btn-cancelar"
+            onclick="document.getElementById('modalSupervisor').style.display='none'">
+            Cancelar
+          </button>
+          <button class="msc-btn-generar" id="btnGenerarResolucion">
+            <span>📄</span> Generar Resolución
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
 </div>
 
 

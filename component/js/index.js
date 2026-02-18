@@ -552,18 +552,22 @@ window.addEventListener('click', function(event) {
 });
 
 // ==================== DATOS DE SUPERVISORES, OBJETOS Y CLÁUSULAS ====================
+// ✅ UN SOLO OBJETO UNIFICADO - reemplaza ambos
 const supervisoresData = {
-    "1": {
-        nombre: "RONALD DARIO FLOREZ SIERRA",
-        documento: "85.271.959"
+    "1": { 
+        nombre:    "RONALD DARIO FLOREZ SIERRA", 
+        documento: "85.271.959",
+        cedula:    "85.271.959"       // ← añade cedula igual a documento
     },
-    "2": {
-        nombre: "GERALDINES GONZALEZ CERVANTES",
-        documento: "1.085.096.299"
+    "2": { 
+        nombre:    "GERALDINES GONZALEZ CERVANTES", 
+        documento: "1.085.096.299",
+        cedula:    "1.085.096.299"    // ← añade cedula igual a documento
     },
-    "3": {
-        nombre: "Supervisor 3",
-        documento: "000.000.000"
+    "3": { 
+        nombre:    "Supervisor 3", 
+        documento: "000.000.000",
+        cedula:    "000.000.000"
     }
 };
 
@@ -639,6 +643,8 @@ const clausulas = {
         "CLÁUSULA CUARTA - FORMA DE PAGO:": "Otra forma de pago."
     }
 };
+
+
 
 // ==================== FUNCIÓN AUXILIAR PARA CARGAR IMAGEN ====================
 async function obtenerImagenMarcaAgua(url) {
@@ -1212,14 +1218,18 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
             if (res.ok) {
                 ocultarLoader();
                 console.log("✅ Archivo subido con ID:", result.id);
-                mostrarMensaje(`✔️ ¡Todo listo! Carpeta y contrato creados.`, 'success');
-                
-                if (typeof modal !== 'undefined' && modal) {
-                    modal.style.display = 'none';
-                }
-            } else {
-                console.error("Error en la respuesta:", result);
-                throw new Error(result.error?.message || "Error en la subida a Drive");
+                mostrarMensaje(`✔️ ¡Contrato creado! Ahora asigna el supervisor.`, 'success');
+
+                // ← NUEVO: guardar carpetaId y abrir modal supervisor
+                abrirModalSupervisor({
+                    numeroContrato,
+                    fechaContrato: new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase(),
+                    nombreContratista: nombre,
+                    cedulaContratista: empleadoActual.cedula,
+                    valorLetras: convertirNumeroALetras(parseInt(limpiarNumero(inputTotal.value))),
+                    valorTotal: formatearNumero(limpiarNumero(inputTotal.value)),
+                    objetoContrato: objetosContrato[objetoContratoSelect.value] || ""
+                }, nuevaCarpetaId);  // ← pasa la carpetaId creada
             }
 
         } catch (err) {
@@ -1241,5 +1251,344 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                 mostrarMensaje("❌ Error desconocido. Revisa la consola (F12)", "error");
             }
         }
+    }
+}
+
+
+// funcion para limpiar y cerrer cuando generarContratoEmpleado cuaando se genere y envia al driver
+function limpiarYcerrar() {
+    // Limpiar campos del formulario
+    numeroContratoInput.value = "";
+    inputTotal.value = "";
+    inputMeses.value = "";
+    inputMensual.value = "";
+    document.getElementById('disponibilidadPresupuestal').value = "";
+    document.getElementById('fechaInicioPresupuestal').value = "";
+    document.getElementById('decretoEncargo').value = "";
+    document.getElementById('fechaDecretoDesignado').value = "";
+    document.getElementById('fechaInicioLaboral').value = "";
+    document.getElementById('fechaFinalLaboral').value = "";
+    suscriptorSelect.value = "";
+    objetoContratoSelect.value = "";
+    suscriptorSelect_Supervidor.value = "";
+
+    // Cerrar modal
+    document.getElementById('modalSupervisor').style.display = 'none';
+}
+
+// CREACION DE LA RESOLUCIÓN DE DESIGNACIÓN DE SUPERVISOR
+    const designacionSupervisor = {
+        considerandos: {
+            a: "a. Que el municipio de El Banco, Magdalena, firmó el contrato de prestación de servicios y apoyo a la gestión No [NUMERO_CONTRATO] de fecha [FECHA_CONTRATO] con [NOMBRE_CONTRATISTA], identificado con cédula de ciudadanía No [CEDULA_CONTRATISTA], cuyo objeto es [OBJETO_CONTRATO], por la suma de [VALOR_LETRAS] ($[VALOR_TOTAL]).",
+            b: "b. Que el municipio requiere asignarle a esta clase de contratos la SUPERVISIÓN de la labor contratada.",
+            c: "c. Que por lo antes expuesto:"
+        },
+        resolucion: {
+            articuloPrimero: "ARTCULO PRIMERO: Desígnese como SUPERVISOR del contrato No [NUMERO_CONTRATO] a la Secretaría Administrativa y Financiera Municipal, en cabeza de la doctora [SUPERVISORA_DESIGNADA], identificada con la cédula de ciudadanía No [CEDULA_SUPERVISORA] de El Banco, Magdalena.",
+            articuloSegundo: "ARTICULO SEGUNDO: Comuníquese la presente designación a las partes intervinientes en el proceso contractual"
+        }
+    }; 
+
+// ==================== MODAL DE SUPERVISOR (abrir al terminar contrato) ====================
+// Guarda el blob del contrato y la carpetaId para reusar en la resolución
+
+
+
+
+
+
+
+
+
+
+
+
+// Preview dinámico al cambiar supervisor
+document.getElementById('suscriptorSelect_Supervidor')
+  .addEventListener('change', function() {
+    const preview  = document.getElementById('mscPreview');
+    const supervisora = supervisoresData[this.value];
+
+    if (supervisora) {
+      document.getElementById('mscPreviewNombre').textContent = supervisora.nombre;
+      document.getElementById('mscPreviewCedula').textContent = 'C.C. ' + supervisora.cedula;
+      preview.style.display = 'flex';
+    } else {
+      preview.style.display = 'none';
+    }
+  });
+
+
+let _carpetaIdActual = null;
+let _datosContratoActual = null;
+
+function abrirModalSupervisor(datosContrato, carpetaId) {
+    _carpetaIdActual = carpetaId;
+    _datosContratoActual = datosContrato;
+    document.getElementById('modalSupervisor').style.display = 'block';
+}
+
+document.getElementById('btnGenerarResolucion')?.addEventListener('click', async function() {
+    const supervisorId = document.getElementById('suscriptorSelect_Supervidor').value;
+    if (!supervisorId) {
+        alert('Por favor seleccione un supervisor');
+        return;
+    }
+
+    const supervisora = supervisoresData[supervisorId];
+    if (!supervisora) {
+        alert('Supervisor no encontrado');
+        return;
+    }
+
+    const textoOriginal = this.innerHTML;
+    this.innerHTML = '⏳ Generando resolución...';
+    this.disabled = true;
+
+    try {
+        await generarResolucionSupervisor(supervisora, _datosContratoActual, _carpetaIdActual);
+        document.getElementById('modalSupervisor').style.display = 'none';
+    } catch (error) {
+        console.error('❌ Error generando resolución:', error);
+        mostrarMensaje('❌ Error: ' + error.message, 'error');
+    } finally {
+        this.innerHTML = textoOriginal;
+        this.disabled = false;
+    }
+});
+
+// ==================== GENERAR RESOLUCIÓN DE SUPERVISOR ====================
+async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId) {
+    const { numeroContrato, fechaContrato, nombreContratista, cedulaContratista, valorLetras, valorTotal, objetoContrato } = datosContrato;
+
+    const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
+
+    const parrafos = [
+        // ── TÍTULO ──
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "RESOLUCIÓN DE DESIGNACIÓN DE SUPERVISOR", bold: true, size: 24, font: "Arial" }),
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: `Contrato No. ${numeroContrato}`, bold: true, size: 24, font: "Arial" }),
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 360, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        // ── CONSIDERANDOS ──
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "CONSIDERANDO:", bold: true, size: 24, font: "Arial" }),
+            ],
+            spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({
+                    text: `a. Que el municipio de El Banco, Magdalena, firmó el contrato de prestación de servicios y apoyo a la gestión No ${numeroContrato} de fecha ${fechaContrato} con `,
+                    size: 24, font: "Arial"
+                }),
+                new docx.TextRun({ text: nombreContratista, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({
+                    text: `, identificado con cédula de ciudadanía No `,
+                    size: 24, font: "Arial"
+                }),
+                new docx.TextRun({ text: cedulaContratista, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({
+                    text: `, cuyo objeto es ${objetoContrato}, por la suma de `,
+                    size: 24, font: "Arial"
+                }),
+                new docx.TextRun({ text: `${valorLetras} ($${valorTotal})`, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: ".", size: 24, font: "Arial" }),
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({
+                    text: "b. Que el municipio requiere asignarle a esta clase de contratos la SUPERVISIÓN de la labor contratada.",
+                    size: 24, font: "Arial"
+                }),
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "c. Que por lo antes expuesto:", size: 24, font: "Arial" }),
+            ],
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        // ── RESUELVE ──
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "RESUELVE:", bold: true, size: 24, font: "Arial" }),
+            ],
+            spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "ARTÍCULO PRIMERO: ", bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({
+                    text: `Desígnese como SUPERVISOR del contrato No ${numeroContrato} a la Secretaría Administrativa y Financiera Municipal, en cabeza de la doctora `,
+                    size: 24, font: "Arial"
+                }),
+                new docx.TextRun({ text: supervisora.nombre, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: ", identificada con la cédula de ciudadanía No ", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: supervisora.cedula, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: " de El Banco, Magdalena.", size: 24, font: "Arial" }),
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "ARTÍCULO SEGUNDO: ", bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({
+                    text: "Comuníquese la presente designación a las partes intervinientes en el proceso contractual.",
+                    size: 24, font: "Arial"
+                }),
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { after: 480, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        // ── FIRMAS ──
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Firmado en original", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Firmado en original", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+                { type: docx.TabStopType.CENTER, position: 7020 },
+            ],
+            spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: supervisora.nombre.toUpperCase(), bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: nombreContratista.toUpperCase(), bold: true, size: 24, font: "Arial" }),
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+                { type: docx.TabStopType.CENTER, position: 7020 },
+            ],
+            spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Supervisora Designada", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Contratista", size: 24, font: "Arial" }),
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+                { type: docx.TabStopType.CENTER, position: 7020 },
+            ],
+            spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+    ];
+
+    // ── SECCIÓN CONFIG ──
+    let sectionConfig = {
+        properties: {
+            page: {
+                size: { width: 12240, height: 20160 },
+                margin: { top: 2880, right: 1440, left: 1440, bottom: 4320 }
+            }
+        },
+        children: parrafos
+    };
+
+    // ── MARCA DE AGUA ──
+    if (imagenBlob) {
+        try {
+            const marcaDeAgua = new docx.ImageRun({
+                data: imagenBlob,
+                transformation: { width: 816, height: 1293 },
+                floating: {
+                    horizontalPosition: {
+                        relative: docx.HorizontalPositionRelativeFrom.PAGE,
+                        align: docx.HorizontalPositionAlign.CENTER
+                    },
+                    verticalPosition: {
+                        relative: docx.VerticalPositionRelativeFrom.PAGE,
+                        offset: 0
+                    },
+                    behindDocument: true,
+                },
+            });
+            sectionConfig.headers = {
+                default: new docx.Header({
+                    children: [new docx.Paragraph({ children: [marcaDeAgua] })]
+                })
+            };
+        } catch (error) {
+            console.error('❌ Error marca de agua:', error);
+        }
+    }
+
+    const doc = new docx.Document({ sections: [sectionConfig] });
+    const blob = await docx.Packer.toBlob(doc);
+
+    // ── SUBIR A LA MISMA CARPETA DEL CONTRATO ──
+    const nombreArchivo = `Resolucion_Supervisor_${numeroContrato}_${nombreContratista.replace(/\s+/g, '_')}.docx`;
+    await subirArchivoACarpeta(blob, nombreArchivo, carpetaId);
+}
+
+
+
+// ==================== SUBIR ARCHIVO A CARPETA YA EXISTENTE ====================
+async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
+    mostrarLoader(`🚀 Subiendo resolución a Drive...`);
+
+    const metadata = {
+        name: nombreArchivo,
+        parents: [carpetaId],
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    };
+
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    form.append('file', blob);
+
+    const token = gapi.client.getToken();
+    if (!token || !token.access_token) throw new Error("No se pudo obtener el token de acceso");
+
+    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: new Headers({ 'Authorization': 'Bearer ' + token.access_token }),
+        body: form
+    });
+
+    const result = await res.json();
+    ocultarLoader();
+
+    if (res.ok) {
+        console.log("✅ Resolución subida con ID:", result.id);
+        mostrarMensaje(`✔️ ¡Resolución de supervisor generada y subida a Drive!`, 'success');
+    } else {
+        throw new Error(result.error?.message || "Error subiendo resolución");
     }
 }
