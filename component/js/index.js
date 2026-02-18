@@ -956,87 +956,66 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
             spacing: { after: 480 }
         }),
 
-        // 🔹 FILA 1: "Firmado en original" - misma línea, separadas
+        // 🔹 FILA 1: "Firmado en original" - centrados en cada mitad
         new docx.Paragraph({
             children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
                 new docx.TextRun({ 
                     text: "Firmado en original", 
-                    bold: true, 
-                    size: 24, 
-                    font: "Arial",
-                    color: "FF0000"
+                    bold: true, size: 24, font: "Arial", color: "FF0000"
                 }),
-                new docx.TextRun({ 
-                    text: "\t", 
-                    size: 24, 
-                    font: "Arial"
-                }),
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
                 new docx.TextRun({ 
                     text: "Firmado en original", 
-                    bold: true, 
-                    size: 24, 
-                    font: "Arial",
-                    color: "FF0000"
+                    bold: true, size: 24, font: "Arial", color: "FF0000"
                 }),
             ],
             tabStops: [
-                { type: docx.TabStopType.CENTER, position: 4680 }  // mitad de la página
+                { type: docx.TabStopType.CENTER, position: 2340 },  // centro del bloque izquierdo
+                { type: docx.TabStopType.CENTER, position: 7020 },  // centro del bloque derecho
             ],
-            alignment: docx.AlignmentType.LEFT,
             spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
 
-        // 🔹 FILA 2: Nombres - misma línea, separados
+        // 🔹 FILA 2: Nombres
         new docx.Paragraph({
             children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
                 new docx.TextRun({ 
                     text: supervisor.nombre.toUpperCase(), 
-                    bold: true, 
-                    size: 24, 
-                    font: "Arial"
+                    bold: true, size: 24, font: "Arial"
                 }),
-                new docx.TextRun({ 
-                    text: "\t", 
-                    size: 24, 
-                    font: "Arial"
-                }),
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
                 new docx.TextRun({ 
                     text: nombre.toUpperCase(), 
-                    bold: true, 
-                    size: 24, 
-                    font: "Arial"
+                    bold: true, size: 24, font: "Arial"
                 }),
             ],
             tabStops: [
-                { type: docx.TabStopType.CENTER, position: 4680 }
+                { type: docx.TabStopType.CENTER, position: 2340 },
+                { type: docx.TabStopType.CENTER, position: 7020 },
             ],
-            alignment: docx.AlignmentType.LEFT,
             spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
 
-        // 🔹 FILA 3: Cargos - misma línea, separados
+        // 🔹 FILA 3: Cargos
         new docx.Paragraph({
             children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
                 new docx.TextRun({ 
                     text: "Alcalde Municipal", 
-                    size: 24, 
-                    font: "Arial"
+                    size: 24, font: "Arial"
                 }),
-                new docx.TextRun({ 
-                    text: "\t", 
-                    size: 24, 
-                    font: "Arial"
-                }),
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
                 new docx.TextRun({ 
                     text: "Contratista", 
-                    size: 24, 
-                    font: "Arial"
+                    size: 24, font: "Arial"
                 }),
             ],
             tabStops: [
-                { type: docx.TabStopType.CENTER, position: 4680 }
+                { type: docx.TabStopType.CENTER, position: 2340 },
+                { type: docx.TabStopType.CENTER, position: 7020 },
             ],
-            alignment: docx.AlignmentType.LEFT,
             spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
 
