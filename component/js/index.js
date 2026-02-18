@@ -950,175 +950,176 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
         }),
 
         // 🔹 SECCIÓN DE FIRMAS - TABLA CON DOS COLUMNAS
-        new docx.Table({
-            width: {
-                size: 9638,  // Ancho total en DXA (página carta con márgenes de 1 pulgada)
-                type: docx.WidthType.DXA,  // ← CAMBIO CLAVE
-            },
-            borders: {
-                top: { style: docx.BorderStyle.NONE },
-                bottom: { style: docx.BorderStyle.NONE },
-                left: { style: docx.BorderStyle.NONE },
-                right: { style: docx.BorderStyle.NONE },
-                insideHorizontal: { style: docx.BorderStyle.NONE },
-                insideVertical: { style: docx.BorderStyle.NONE },
-            },
-            rows: [
-                // Fila 1: "Firmado en original"
-                new docx.TableRow({
-                    children: [
-                        new docx.TableCell({
-                            children: [
-                                new docx.Paragraph({
-                                    children: [
-                                        new docx.TextRun({ 
-                                            text: "Firmado en original", 
-                                            bold: true, 
-                                            size: 24, 
-                                            font: "Arial",
-                                            color: "FF0000"
-                                        })
-                                    ],
-                                    alignment: docx.AlignmentType.CENTER,
-                                    spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
-                                })
-                            ],
-                            borders: {
-                                top: { style: docx.BorderStyle.NONE },
-                                bottom: { style: docx.BorderStyle.NONE },
-                                left: { style: docx.BorderStyle.NONE },
-                                right: { style: docx.BorderStyle.NONE },
-                            },
-                            width: { size: 4819, type: docx.WidthType.DXA }  // ← mitad del total
-                        }),
-                        new docx.TableCell({
-                            children: [
-                                new docx.Paragraph({
-                                    children: [
-                                        new docx.TextRun({ 
-                                            text: "Firmado en original", 
-                                            bold: true, 
-                                            size: 24, 
-                                            font: "Arial",
-                                            color: "FF0000"
-                                        })
-                                    ],
-                                    alignment: docx.AlignmentType.CENTER,
-                                    spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
-                                })
-                            ],
-                            borders: {
-                                top: { style: docx.BorderStyle.NONE },
-                                bottom: { style: docx.BorderStyle.NONE },
-                                left: { style: docx.BorderStyle.NONE },
-                                right: { style: docx.BorderStyle.NONE },
-                            },
-                            width: { size: 4819, type: docx.WidthType.DXA }  // ← mitad del total
-                        })
-                    ]
-                }),
-                // Fila 2: Nombres
-                new docx.TableRow({
-                    children: [
-                        new docx.TableCell({
-                            children: [
-                                new docx.Paragraph({
-                                    children: [
-                                        new docx.TextRun({ 
-                                            text: supervisor.nombre.toUpperCase(), 
-                                            bold: true, 
-                                            size: 24, 
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: docx.AlignmentType.CENTER,
-                                    spacing: { after: 60, line: 240, lineRule: docx.LineRuleType.AUTO }
-                                })
-                            ],
-                            borders: {
-                                top: { style: docx.BorderStyle.NONE },
-                                bottom: { style: docx.BorderStyle.NONE },
-                                left: { style: docx.BorderStyle.NONE },
-                                right: { style: docx.BorderStyle.NONE },
-                            },
-                            width: { size: 4819, type: docx.WidthType.DXA }
-                        }),
-                        new docx.TableCell({
-                            children: [
-                                new docx.Paragraph({
-                                    children: [
-                                        new docx.TextRun({ 
-                                            text: nombre.toUpperCase(), 
-                                            bold: true, 
-                                            size: 24, 
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: docx.AlignmentType.CENTER,
-                                    spacing: { after: 60, line: 240, lineRule: docx.LineRuleType.AUTO }
-                                })
-                            ],
-                            borders: {
-                                top: { style: docx.BorderStyle.NONE },
-                                bottom: { style: docx.BorderStyle.NONE },
-                                left: { style: docx.BorderStyle.NONE },
-                                right: { style: docx.BorderStyle.NONE },
-                            },
-                            width: { size: 4819, type: docx.WidthType.DXA }
-                        })
-                    ]
-                }),
-                // Fila 3: Cargos
-                new docx.TableRow({
-                    children: [
-                        new docx.TableCell({
-                            children: [
-                                new docx.Paragraph({
-                                    children: [
-                                        new docx.TextRun({ 
-                                            text: "Alcalde Municipal", 
-                                            size: 24, 
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: docx.AlignmentType.CENTER,
-                                    spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
-                                })
-                            ],
-                            borders: {
-                                top: { style: docx.BorderStyle.NONE },
-                                bottom: { style: docx.BorderStyle.NONE },
-                                left: { style: docx.BorderStyle.NONE },
-                                right: { style: docx.BorderStyle.NONE },
-                            },
-                            width: { size: 4819, type: docx.WidthType.DXA }
-                        }),
-                        new docx.TableCell({
-                            children: [
-                                new docx.Paragraph({
-                                    children: [
-                                        new docx.TextRun({ 
-                                            text: "Contratista", 
-                                            size: 24, 
-                                            font: "Arial"
-                                        })
-                                    ],
-                                    alignment: docx.AlignmentType.CENTER,
-                                    spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
-                                })
-                            ],
-                            borders: {
-                                top: { style: docx.BorderStyle.NONE },
-                                bottom: { style: docx.BorderStyle.NONE },
-                                left: { style: docx.BorderStyle.NONE },
-                                right: { style: docx.BorderStyle.NONE },
-                            },
-                            width: { size: 4819, type: docx.WidthType.DXA }
-                        })
-                    ]
-                })
-            ]
-        }),
+    new docx.Table({
+        width: {
+            size: 9360,
+            type: docx.WidthType.DXA,
+        },
+        layout: docx.TableLayoutType.FIXED,  // ← CLAVE: fuerza ancho fijo
+        borders: {
+            top: { style: docx.BorderStyle.NONE },
+            bottom: { style: docx.BorderStyle.NONE },
+            left: { style: docx.BorderStyle.NONE },
+            right: { style: docx.BorderStyle.NONE },
+            insideHorizontal: { style: docx.BorderStyle.NONE },
+            insideVertical: { style: docx.BorderStyle.NONE },
+        },
+        rows: [
+            // Fila 1: "Firmado en original"
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [
+                            new docx.Paragraph({
+                                children: [
+                                    new docx.TextRun({ 
+                                        text: "Firmado en original", 
+                                        bold: true, 
+                                        size: 24, 
+                                        font: "Arial",
+                                        color: "FF0000"
+                                    })
+                                ],
+                                alignment: docx.AlignmentType.CENTER,
+                                spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+                            })
+                        ],
+                        borders: {
+                            top: { style: docx.BorderStyle.NONE },
+                            bottom: { style: docx.BorderStyle.NONE },
+                            left: { style: docx.BorderStyle.NONE },
+                            right: { style: docx.BorderStyle.NONE },
+                        },
+                        width: { size: 4680, type: docx.WidthType.DXA }
+                    }),
+                    new docx.TableCell({
+                        children: [
+                            new docx.Paragraph({
+                                children: [
+                                    new docx.TextRun({ 
+                                        text: "Firmado en original", 
+                                        bold: true, 
+                                        size: 24, 
+                                        font: "Arial",
+                                        color: "FF0000"
+                                    })
+                                ],
+                                alignment: docx.AlignmentType.CENTER,
+                                spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+                            })
+                        ],
+                        borders: {
+                            top: { style: docx.BorderStyle.NONE },
+                            bottom: { style: docx.BorderStyle.NONE },
+                            left: { style: docx.BorderStyle.NONE },
+                            right: { style: docx.BorderStyle.NONE },
+                        },
+                        width: { size: 4680, type: docx.WidthType.DXA }
+                    })
+                ]
+            }),
+            // Fila 2: Nombres
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [
+                            new docx.Paragraph({
+                                children: [
+                                    new docx.TextRun({ 
+                                        text: supervisor.nombre.toUpperCase(), 
+                                        bold: true, 
+                                        size: 24, 
+                                        font: "Arial"
+                                    })
+                                ],
+                                alignment: docx.AlignmentType.CENTER,
+                                spacing: { after: 60, line: 240, lineRule: docx.LineRuleType.AUTO }
+                            })
+                        ],
+                        borders: {
+                            top: { style: docx.BorderStyle.NONE },
+                            bottom: { style: docx.BorderStyle.NONE },
+                            left: { style: docx.BorderStyle.NONE },
+                            right: { style: docx.BorderStyle.NONE },
+                        },
+                        width: { size: 4680, type: docx.WidthType.DXA }
+                    }),
+                    new docx.TableCell({
+                        children: [
+                            new docx.Paragraph({
+                                children: [
+                                    new docx.TextRun({ 
+                                        text: nombre.toUpperCase(), 
+                                        bold: true, 
+                                        size: 24, 
+                                        font: "Arial"
+                                    })
+                                ],
+                                alignment: docx.AlignmentType.CENTER,
+                                spacing: { after: 60, line: 240, lineRule: docx.LineRuleType.AUTO }
+                            })
+                        ],
+                        borders: {
+                            top: { style: docx.BorderStyle.NONE },
+                            bottom: { style: docx.BorderStyle.NONE },
+                            left: { style: docx.BorderStyle.NONE },
+                            right: { style: docx.BorderStyle.NONE },
+                        },
+                        width: { size: 4680, type: docx.WidthType.DXA }
+                    })
+                ]
+            }),
+            // Fila 3: Cargos
+            new docx.TableRow({
+                children: [
+                    new docx.TableCell({
+                        children: [
+                            new docx.Paragraph({
+                                children: [
+                                    new docx.TextRun({ 
+                                        text: "Alcalde Municipal", 
+                                        size: 24, 
+                                        font: "Arial"
+                                    })
+                                ],
+                                alignment: docx.AlignmentType.CENTER,
+                                spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+                            })
+                        ],
+                        borders: {
+                            top: { style: docx.BorderStyle.NONE },
+                            bottom: { style: docx.BorderStyle.NONE },
+                            left: { style: docx.BorderStyle.NONE },
+                            right: { style: docx.BorderStyle.NONE },
+                        },
+                        width: { size: 4680, type: docx.WidthType.DXA }
+                    }),
+                    new docx.TableCell({
+                        children: [
+                            new docx.Paragraph({
+                                children: [
+                                    new docx.TextRun({ 
+                                        text: "Contratista", 
+                                        size: 24, 
+                                        font: "Arial"
+                                    })
+                                ],
+                                alignment: docx.AlignmentType.CENTER,
+                                spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+                            })
+                        ],
+                        borders: {
+                            top: { style: docx.BorderStyle.NONE },
+                            bottom: { style: docx.BorderStyle.NONE },
+                            left: { style: docx.BorderStyle.NONE },
+                            right: { style: docx.BorderStyle.NONE },
+                        },
+                        width: { size: 4680, type: docx.WidthType.DXA }
+                    })
+                ]
+            })
+        ]
+    }),
     ];
     // 7. Función auxiliar para generar TextRuns de las cláusulas
     function generarClausulasTexto(clausulas, datos) {
