@@ -949,11 +949,11 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
             spacing: { after: 480 }
         }),
 
-        // 🔹 SECCIÓN DE FIRMAS - TABLA CON DOS COLUMNAS (SOLO ESTO)
+        // 🔹 SECCIÓN DE FIRMAS - TABLA CON DOS COLUMNAS
         new docx.Table({
             width: {
-                size: 100,
-                type: docx.WidthType.PERCENTAGE,
+                size: 9638,  // Ancho total en DXA (página carta con márgenes de 1 pulgada)
+                type: docx.WidthType.DXA,  // ← CAMBIO CLAVE
             },
             borders: {
                 top: { style: docx.BorderStyle.NONE },
@@ -989,7 +989,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 4500, type: docx.WidthType.DXA }
+                            width: { size: 4819, type: docx.WidthType.DXA }  // ← mitad del total
                         }),
                         new docx.TableCell({
                             children: [
@@ -1013,7 +1013,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 4500, type: docx.WidthType.DXA }
+                            width: { size: 4819, type: docx.WidthType.DXA }  // ← mitad del total
                         })
                     ]
                 }),
@@ -1041,7 +1041,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 4500, type: docx.WidthType.DXA }
+                            width: { size: 4819, type: docx.WidthType.DXA }
                         }),
                         new docx.TableCell({
                             children: [
@@ -1064,7 +1064,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 4500, type: docx.WidthType.DXA }
+                            width: { size: 4819, type: docx.WidthType.DXA }
                         })
                     ]
                 }),
@@ -1091,7 +1091,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 4500, type: docx.WidthType.DXA }
+                            width: { size: 4819, type: docx.WidthType.DXA }
                         }),
                         new docx.TableCell({
                             children: [
@@ -1113,7 +1113,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 4500, type: docx.WidthType.DXA }
+                            width: { size: 4819, type: docx.WidthType.DXA }
                         })
                     ]
                 })
