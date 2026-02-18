@@ -572,7 +572,7 @@ const supervisoresData = {
 };
 
 const objetosContrato = {
-    "1": "PRESTACION DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERIA",
+    "1": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERÍA",
     "2": "OTRO OBJETO DE CONTRATO"
 };
 
@@ -1220,6 +1220,8 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                 console.log("✅ Archivo subido con ID:", result.id);
                 mostrarMensaje(`✔️ ¡Contrato creado! Ahora asigna el supervisor.`, 'success');
 
+                modal.style.display = 'none';
+
                 // ← NUEVO: guardar carpetaId y abrir modal supervisor
                 abrirModalSupervisor({
                     numeroContrato,
@@ -1266,39 +1268,25 @@ function limpiarYcerrar() {
     document.getElementById('fechaInicioPresupuestal').value = "";
     document.getElementById('decretoEncargo').value = "";
     document.getElementById('fechaDecretoDesignado').value = "";
+    document.getElementById('fechaInicioLaboralSelector').value = "";  // ← añadir
     document.getElementById('fechaInicioLaboral').value = "";
+    document.getElementById('fechaFinalLaboralSelector').value = "";   // ← añadir
     document.getElementById('fechaFinalLaboral').value = "";
     suscriptorSelect.value = "";
     objetoContratoSelect.value = "";
-    suscriptorSelect_Supervidor.value = "";
+    document.getElementById('suscriptorSelect_Supervidor').value = ""; // ← usar getElementById
+    document.getElementById('mscPreview').style.display = 'none';      // ← ocultar preview
 
-    // Cerrar modal
+    // Cerrar ambos modales
+    modal.style.display = 'none';
     document.getElementById('modalSupervisor').style.display = 'none';
+    
+    // Limpiar variables globales
+    _carpetaIdActual = null;
+    _datosContratoActual = null;
+
+    empleadoActual = null;
 }
-
-// CREACION DE LA RESOLUCIÓN DE DESIGNACIÓN DE SUPERVISOR
-    const designacionSupervisor = {
-        considerandos: {
-            a: "a. Que el municipio de El Banco, Magdalena, firmó el contrato de prestación de servicios y apoyo a la gestión No [NUMERO_CONTRATO] de fecha [FECHA_CONTRATO] con [NOMBRE_CONTRATISTA], identificado con cédula de ciudadanía No [CEDULA_CONTRATISTA], cuyo objeto es [OBJETO_CONTRATO], por la suma de [VALOR_LETRAS] ($[VALOR_TOTAL]).",
-            b: "b. Que el municipio requiere asignarle a esta clase de contratos la SUPERVISIÓN de la labor contratada.",
-            c: "c. Que por lo antes expuesto:"
-        },
-        resolucion: {
-            articuloPrimero: "ARTCULO PRIMERO: Desígnese como SUPERVISOR del contrato No [NUMERO_CONTRATO] a la Secretaría Administrativa y Financiera Municipal, en cabeza de la doctora [SUPERVISORA_DESIGNADA], identificada con la cédula de ciudadanía No [CEDULA_SUPERVISORA] de El Banco, Magdalena.",
-            articuloSegundo: "ARTICULO SEGUNDO: Comuníquese la presente designación a las partes intervinientes en el proceso contractual"
-        }
-    }; 
-
-// ==================== MODAL DE SUPERVISOR (abrir al terminar contrato) ====================
-// Guarda el blob del contrato y la carpetaId para reusar en la resolución
-
-
-
-
-
-
-
-
 
 
 
@@ -1347,7 +1335,7 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
 
     try {
         await generarResolucionSupervisor(supervisora, _datosContratoActual, _carpetaIdActual);
-        document.getElementById('modalSupervisor').style.display = 'none';
+        limpiarYcerrar(); // ← aquí, todo limpio al final
     } catch (error) {
         console.error('❌ Error generando resolución:', error);
         mostrarMensaje('❌ Error: ' + error.message, 'error');
@@ -1367,7 +1355,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
         // ── TÍTULO ──
         new docx.Paragraph({
             children: [
-                new docx.TextRun({ text: "RESOLUCIÓN DE DESIGNACIÓN DE SUPERVISOR", bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "POR LA CUAL SE DESIGNA EL SUPERVISOR DEL CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES Y APOYO A LA GESTIÓN", bold: true, size: 24, font: "Arial" }),
             ],
             alignment: docx.AlignmentType.CENTER,
             spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
@@ -1375,24 +1363,16 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
 
         new docx.Paragraph({
             children: [
-                new docx.TextRun({ text: `Contrato No. ${numeroContrato}`, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: `Contrato No. ${numeroContrato},DE CONTRATO ${fechaContrato}  `, bold: true, size: 24, font: "Arial" }),
             ],
             alignment: docx.AlignmentType.CENTER,
             spacing: { after: 360, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
 
-        // ── CONSIDERANDOS ──
-        new docx.Paragraph({
-            children: [
-                new docx.TextRun({ text: "CONSIDERANDO:", bold: true, size: 24, font: "Arial" }),
-            ],
-            spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
-        }),
-
         new docx.Paragraph({
             children: [
                 new docx.TextRun({
-                    text: `a. Que el municipio de El Banco, Magdalena, firmó el contrato de prestación de servicios y apoyo a la gestión No ${numeroContrato} de fecha ${fechaContrato} con `,
+                    text: `a. Que el municipio de El Banco, Magdalena, firmó el contrato de prestación de servicios y apoyo a la gestión No ${numeroContrato} de fecha ${fechaContrato} firmado con `,
                     size: 24, font: "Arial"
                 }),
                 new docx.TextRun({ text: nombreContratista, bold: true, size: 24, font: "Arial" }),
@@ -1433,18 +1413,23 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
         // ── RESUELVE ──
         new docx.Paragraph({
             children: [
-                new docx.TextRun({ text: "RESUELVE:", bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "DESIGNA:", bold: true, size: 24, font: "Arial"}),
             ],
-            spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 360, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
 
         new docx.Paragraph({
             children: [
                 new docx.TextRun({ text: "ARTÍCULO PRIMERO: ", bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({
-                    text: `Desígnese como SUPERVISOR del contrato No ${numeroContrato} a la Secretaría Administrativa y Financiera Municipal, en cabeza de la doctora `,
+                    text: `Desígnase como SUPERVISOR del contrato de prestación de servicios y apoyo a la gestión No ${numeroContrato} de fecha ${fechaContrato} firmado con el señor `,
                     size: 24, font: "Arial"
                 }),
+                new docx.TextRun({ text: nombreContratista, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: ", identificado con cédula de ciudadanía No ", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: cedulaContratista, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: " de El Banco, Magdalena, a la Secretaria Administrativa y Financiera Municipal, la cual en este momento se encuentra en cabeza de la  doctor@ ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.nombre, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: ", identificada con la cédula de ciudadanía No ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.cedula, bold: true, size: 24, font: "Arial" }),
@@ -1466,6 +1451,23 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
             spacing: { after: 480, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
 
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "COMUNIQUESE Y CUMPLASE", size: 24, font: "Arial" }),
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 360, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: `Dado en El Banco, Magdalena, a los ${fechaContrato.split(' ')[0]} de ${fechaContrato.split(' ')[1]} de 2026.`, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: fechaContrato, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: ", en original.", size: 24, font: "Arial" }),
+            ]}),
+        
+            // bajar mas este parrafo en el word para que quede debajo de los nombres y no tan pegado a ellos
+
         // ── FIRMAS ──
         new docx.Paragraph({
             children: [
@@ -1478,7 +1480,8 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
                 { type: docx.TabStopType.CENTER, position: 2340 },
                 { type: docx.TabStopType.CENTER, position: 7020 },
             ],
-            spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 360, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
 
         new docx.Paragraph({
@@ -1495,7 +1498,8 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
             spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
 
-        new docx.Paragraph({
+        new docx.Paragraph({// bajar mas este parrafo en el word para que quede debajo de los nombres y no tan pegado a ellos
+
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: "Supervisora Designada", size: 24, font: "Arial" }),
