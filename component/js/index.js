@@ -989,7 +989,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 50, type: docx.WidthType.PERCENTAGE }
+                            width: { size: 4500, type: docx.WidthType.DXA }
                         }),
                         new docx.TableCell({
                             children: [
@@ -1013,7 +1013,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 50, type: docx.WidthType.PERCENTAGE }
+                            width: { size: 4500, type: docx.WidthType.DXA }
                         })
                     ]
                 }),
@@ -1041,7 +1041,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 50, type: docx.WidthType.PERCENTAGE }
+                            width: { size: 4500, type: docx.WidthType.DXA }
                         }),
                         new docx.TableCell({
                             children: [
@@ -1064,7 +1064,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 50, type: docx.WidthType.PERCENTAGE }
+                            width: { size: 4500, type: docx.WidthType.DXA }
                         })
                     ]
                 }),
@@ -1091,7 +1091,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 50, type: docx.WidthType.PERCENTAGE }
+                            width: { size: 4500, type: docx.WidthType.DXA }
                         }),
                         new docx.TableCell({
                             children: [
@@ -1113,7 +1113,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                                 left: { style: docx.BorderStyle.NONE },
                                 right: { style: docx.BorderStyle.NONE },
                             },
-                            width: { size: 50, type: docx.WidthType.PERCENTAGE }
+                            width: { size: 4500, type: docx.WidthType.DXA }
                         })
                     ]
                 })
