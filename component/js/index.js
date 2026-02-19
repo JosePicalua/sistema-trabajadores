@@ -1319,6 +1319,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                 modal.style.display = 'none';
 
                 // ← NUEVO: guardar carpetaId y abrir modal supervisor
+                // ── DONDE LLAMAS abrirModalSupervisor ──
                 abrirModalSupervisor({
                     numeroContrato,
                     fechaContrato: new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase(),
@@ -1327,10 +1328,10 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                     valorLetras: convertirNumeroALetras(parseInt(limpiarNumero(inputTotal.value))),
                     valorTotal: formatearNumero(limpiarNumero(inputTotal.value)),
                     objetoContrato: objetosContrato[objetoContratoSelect.value] || "",
-                    // ✅ AGREGAR ESTOS DOS:
-                    tipoEstudio: objetoContratoSelect.value,         // ← "1", "2" o "3"
-                    cantidadMeses: inputMeses.value,                 // ← también faltaba en _datosContratoActual
-                    valorMensual: limpiarNumero(inputMensual.value)  // ← también faltaba
+                    // ✅ ESTAS 3 LÍNEAS SON LAS QUE FALTAN:
+                    tipoEstudio:   objetoContratoSelect.value,
+                    cantidadMeses: inputMeses.value,
+                    valorMensual:  limpiarNumero(inputMensual.value)
                 }, nuevaCarpetaId);  // ← pasa la carpetaId creada
             }
 
@@ -2238,6 +2239,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
 
 // ✅ CORREGIDO: agregar supervisora como parámetro
 async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
+    console.log('🔍 datosContrato recibido:', datosContrato);
     const {
         numeroContrato,
         nombreContratista,
