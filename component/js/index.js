@@ -1441,8 +1441,17 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
         await generarIdoneidadYExperiencia(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarCertificadoNoExistencia(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarActaDeInicio(supervisora, _datosContratoActual, _carpetaIdActual);
-        // ✅ CORREGIDO: agregar supervisora como primer parámetro
         await generarEstudiosPrevios(supervisora, _datosContratoActual, _carpetaIdActual);
+
+        // ✅ NUEVO: actualizar columna C con el estado "Documentos Generados"
+        await actualizarEstadoEnSheets(
+            _datosContratoActual.cedulaContratista,
+            "Documentos Generados"
+        );
+
+        // ✅ NUEVO: recargar la tabla para reflejar el nuevo estado visualmente
+        await cargarDatosGoogleSheets();
+
         limpiarYcerrar();
     } catch (error) {
         console.error('❌ Error generando documentos:', error);
@@ -1452,6 +1461,9 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
         this.disabled = false;
     }
 });
+
+
+
 
 // ==================== GENERAR RESOLUCIÓN DE SUPERVISOR ====================
 async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId) {
@@ -2432,5 +2444,48 @@ async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
         mostrarMensaje(`✔️ ¡Resolución de Estuio Previo y subida a Drive!`, 'success');
     } else {
         throw new Error(result.error?.message || "Error subiendo resolución");
+    }
+}
+
+
+
+// ==================== ACTUALIZAR ESTADO EN GOOGLE SHEETS ====================
+async function actualizarEstadoEnSheets(cedulaContratista, nuevoEstado) {
+    try {
+        const spreadsheetId = '1SGlZCxM3bDcyOvt9DyrlmoUx0KZ48-vja8gRf27Qs8A';
+
+        // 1. Leer todas las filas para encontrar la fila correcta por cédula
+        const response = await gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: "trabajadores!A2:C",
+        });
+
+        const rows = response.result.values || [];
+
+        // 2. Buscar el índice de la fila que coincide con la cédula
+        const filaIndex = rows.findIndex(fila => fila[1] === cedulaContratista);
+
+        if (filaIndex === -1) {
+            console.warn(`⚠️ No se encontró la cédula ${cedulaContratista} en Sheets`);
+            return;
+        }
+
+        // 3. La fila en Sheets es filaIndex + 2 (porque A2 = fila 2, y el array empieza en 0)
+        const filaSheets = filaIndex + 2;
+        const rangoActualizar = `trabajadores!C${filaSheets}`;
+
+        // 4. Actualizar la columna C
+        await gapi.client.sheets.spreadsheets.values.update({
+            spreadsheetId,
+            range: rangoActualizar,
+            valueInputOption: "RAW",
+            resource: { values: [[nuevoEstado]] }
+        });
+
+        console.log(`✅ Estado actualizado en fila ${filaSheets}: "${nuevoEstado}"`);
+
+    } catch (error) {
+        console.error('❌ Error actualizando Sheets:', error);
+        // No lanzar el error — si falla Sheets no debe bloquear el flujo principal
     }
 }
