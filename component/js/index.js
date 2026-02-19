@@ -1867,17 +1867,22 @@ async function generarCertificadoNoExistencia(supervisora, dataosContrato, carpe
 // ======================= CERTIFICADO ACTA DE INICIO
 
 async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
+
+
+    // 3. Obtener valores del formulario
+    const cantidadMeses = inputMeses.value;
+    const valorMensual = limpiarNumero(inputMensual.value);
+    const valorMensualFormateado = formatearNumero(valorMensual);
+    const fechaFinalLaboral = fechaFinalLaboralInput ? fechaALetraYNumero(fechaFinalLaboralInput) : "";
     const {
         numeroContrato,
         fechaContrato,        // "28 DE ENERO DE 2026"
-        fechaElaboracion,     // "04/02/2026"
-        fechaInicioLaboral,   // "04/02/2026"
+        fechaElaboracion,     // "04/02/2026"  // "04/02/2026"
         nombreContratista,
         cedulaContratista,
         objetoContrato,
         valorTotal,
-        valorMensual,
-        cantidadMeses,
+
     } = datosContrato;
 
     const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
@@ -1942,7 +1947,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
         new docx.TableRow({ children: [
             crearCelda("FORMA DE PAGO:",     { bold: true, ancho: 3500 }),
             crearCelda(
-                `El valor total del contrato será cancelado en ${cantidadMeses} cuotas mensuales vencidas, por valor de $ ${valorMensual} cada una, previo informe de actividades, pago a su seguridad social y recibido de conformidad por parte del Supervisor del Contrato.`,
+                `El valor total del contrato será cancelado en ${cantidadMeses} cuotas mensuales vencidas, por valor de $ ${valorMensualFormateado} cada una, previo informe de actividades, pago a su seguridad social y recibido de conformidad por parte del Supervisor del Contrato.`,
                 { ancho: 6860 }
             ),
         ]}),
@@ -1964,7 +1969,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
         // Fila 11
         new docx.TableRow({ children: [
             crearCelda("PLAZO INICIAL",      { bold: true, ancho: 3500 }),
-            crearCelda(`${cantidadMeses} (${cantidadMeses}) meses`, { ancho: 6860 }),
+            crearCelda(`(${cantidadMeses}) meses`, { ancho: 6860 }),
         ]}),
         // Fila 12
         new docx.TableRow({ children: [
@@ -1974,7 +1979,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
         // Fila 13
         new docx.TableRow({ children: [
             crearCelda("FECHA DE INICIO",   { bold: true, ancho: 3500 }),
-            crearCelda(fechaInicioLaboral,                { ancho: 6860 }),
+            crearCelda(fechaFinalLaboral,                { ancho: 6860 }),
         ]}),
     ];
 
