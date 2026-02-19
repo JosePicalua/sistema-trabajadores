@@ -843,8 +843,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
     const fechaInicioLaboralInput = document.getElementById('fechaInicioLaboral').value;
     const fechaInicioLaboral = fechaInicioLaboralInput ? fechaALetraYNumero(fechaInicioLaboralInput) : "";
     
-    const fechaFinalLaboralInput = document.getElementById('fechaFinalLaboral').value;
-    const fechaFinalLaboral = fechaFinalLaboralInput ? fechaALetraYNumero(fechaFinalLaboralInput) : "";
+    
 
     console.log('💰 Valores:', {
         valorTotal,
