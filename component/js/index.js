@@ -722,9 +722,9 @@ const estudioPrevio = {
                 ]
             },
             {
-                firma: "FIRMADO EN ORIGINAL",
-                titular: "ISOLINA ALICIA VIDES MARTINEZ",
-                parrafos: "SECRETARIA ADMINISTRATIVA Y FINANCIERA"
+                    firma: "FIRMADO EN ORIGINAL",
+                    titular: "ISOLINA ALICIA VIDES MARTINEZ",
+                    cargo: "SECRETARIA ADMINISTRATIVA Y FINANCIERA"  // ← "cargo" en vez de "parrafos"
 
             }
         ]
@@ -2273,10 +2273,40 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
         }),
     ];
 
-    // ── ITERAR SECCIONES ──
     estudioSeleccionado.secciones.forEach(seccion => {
 
-        // Título de sección
+        // ✅ Si es sección de firma, renderizar diferente y saltar
+        if (seccion.firma) {
+            parrafos.push(
+                new docx.Paragraph({
+                    children: [
+                        new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                        new docx.TextRun({ text: seccion.firma, bold: true, size: 24, font: "Arial", color: "FF0000" }),
+                    ],
+                    tabStops: [{ type: docx.TabStopType.CENTER, position: 2340 }],
+                    spacing: { before: 480, after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+                }),
+                new docx.Paragraph({
+                    children: [
+                        new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                        new docx.TextRun({ text: supervisora.nombre.toUpperCase(), bold: true, size: 24, font: "Arial" }),
+                    ],
+                    tabStops: [{ type: docx.TabStopType.CENTER, position: 2340 }],
+                    spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+                }),
+                new docx.Paragraph({
+                    children: [
+                        new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                        new docx.TextRun({ text: seccion.cargo || "", size: 24, font: "Arial" }),
+                    ],
+                    tabStops: [{ type: docx.TabStopType.CENTER, position: 2340 }],
+                    spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+                })
+            );
+            return; // ← saltar el resto del forEach para esta sección
+        }
+
+        // Secciones normales — título
         parrafos.push(new docx.Paragraph({
             children: [new docx.TextRun({
                 text: `${seccion.numero}.   ${seccion.titulo}`,
@@ -2286,16 +2316,11 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
             spacing: { before: 300, after: 200, line: 240, lineRule: docx.LineRuleType.AUTO }
         }));
 
-        // Párrafos de la sección (con reemplazos aplicados)
+        // Párrafos normales
         seccion.parrafos.forEach(texto => {
-            if (!texto) return; // saltar párrafos vacíos ""
-
-            const textoFinal = aplicarReemplazos(texto);
-
+            if (!texto) return;
             parrafos.push(new docx.Paragraph({
-                children: [new docx.TextRun({
-                    text: textoFinal, size: 24, font: "Arial"
-                })],
+                children: [new docx.TextRun({ text: aplicarReemplazos(texto), size: 24, font: "Arial" })],
                 alignment: docx.AlignmentType.JUSTIFIED,
                 spacing: { after: 200, line: 240, lineRule: docx.LineRuleType.AUTO },
                 indent: { left: 720 }
