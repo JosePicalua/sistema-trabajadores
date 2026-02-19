@@ -394,15 +394,33 @@ function convertirNumeroALetras(num) {
             const fila = document.createElement('tr');
             fila.style.borderBottom = "1px solid #f0f0f0";
 
+            // ── COLOR DEL TD SEGÚN ESTADO ──
+            const estado = (empleado.estado || '').toLowerCase();
+
+            let tdEstiloFondo = '';
+            let badgeColor = '';
+            let badgeTexto = empleado.estado || 'Pendiente';
+
+            if (estado.includes('documentos generados')) {
+                // ✅ Verde — dato interno real
+                tdEstiloFondo = 'background-color: #d4edda;';
+                badgeColor = '#28a745';
+            } else {
+                // ⚠️ Amarillo — visualmente Pendiente aunque internamente sea otra cosa
+                tdEstiloFondo = 'background-color: #fff3cd;';
+                badgeColor = '#f39c12';
+                badgeTexto = 'Pendiente'; // ← fuerza el texto visible a "Pendiente"
+            }
+
             fila.innerHTML = `
                 <td style="padding: 15px; vertical-align: middle;">
-                    <div style="font-weight: 600; color: #2c3e50; font-size: 0.95rem;">${empleado.nombre_completo}</div>
+                    <div style="font-weight: 600; color: #2c3e50; font-size: 0.95rem;">${empleado.nombre_complete}</div>
                     <div style="font-size: 0.75rem; color: #95a5a6; margin-top: 2px;">Empleado Verificado</div>
                 </td>
                 <td style="padding: 15px; vertical-align: middle; font-family: 'JetBrains Mono', monospace; color: #7f8c8d; font-size: 0.9rem;">
                     ${empleado.cedula}
                 </td>
-                <td style="padding: 15px; vertical-align: middle;">
+                <td style="padding: 15px; vertical-align: middle; ${tdEstiloFondo}">
                     <span style="
                         padding: 5px 12px; 
                         border-radius: 20px; 
@@ -410,10 +428,10 @@ function convertirNumeroALetras(num) {
                         font-weight: 700;
                         text-transform: uppercase;
                         letter-spacing: 0.5px;
-                        background-color: ${getBgColor(empleado.claseEstado)}15; /* Color con 15% opacidad */
-                        color: ${getBgColor(empleado.claseEstado)};
-                        border: 1px solid ${getBgColor(empleado.claseEstado)}40;">
-                        ${empleado.estado || 'Pendiente'}
+                        background-color: ${badgeColor}20;
+                        color: ${badgeColor};
+                        border: 1px solid ${badgeColor}60;">
+                        ${badgeTexto}
                     </span>
                 </td>
                 <td style="padding: 15px; text-align: right; vertical-align: middle;">
