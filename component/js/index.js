@@ -1339,6 +1339,7 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
         await generarResolucionSupervisor(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarIdoneidadYExperiencia(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarCertificadoNoExistencia(supervisora, _datosContratoActual, _carpetaIdActual);
+        await generarActaDeInicio(supervisora, _datosContratoActual, _carpetaIdActual);
         limpiarYcerrar();
     } catch (error) {
         console.error('❌ Error generando documentos:', error);
@@ -1710,6 +1711,7 @@ async function generarIdoneidadYExperiencia(supervisora, dataosContrato, carpeta
                 
 }
 
+ // ======================= CERTIFICADO DE NO EXISTENCIA ===============
 
 async function generarCertificadoNoExistencia(supervisora, dataosContrato, carpetaId) {
     const { numeroContrato, fechaContrato, nombreContratista, cedulaContratista, objetoContrato } = dataosContrato;
@@ -1771,6 +1773,46 @@ async function generarCertificadoNoExistencia(supervisora, dataosContrato, carpe
         }),
     // ✅ CORRECCIÓN 3: Se eliminó la coma y el cierre "]," que cortaba el bloque del array
     // y mezclaba el código de sectionConfig dentro del array de párrafos, causando SyntaxError
+    // ── FIRMAS ──
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Firmado en original", bold: true, size: 24, font: "Arial", color: "FF0000"}),
+                
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 360, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "ISOLINA ALICIA VIDES MARTINEZ", bold: true, size: 24, font: "Arial"}),
+
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+
+            ],
+            spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+         new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "SECRETARIA ADMINISTRATIVA Y FINANCIERA", bold: true, size: 24, font: "Arial"}),
+
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+
+            ],
+            spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
     ];
 
     // ── SECCIÓN CONFIG ──
@@ -1821,6 +1863,270 @@ async function generarCertificadoNoExistencia(supervisora, dataosContrato, carpe
 
 
 
+
+// ======================= CERTIFICADO ACTA DE INICIO
+
+async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
+    const {
+        numeroContrato,
+        fechaContrato,        // "28 DE ENERO DE 2026"
+        fechaElaboracion,     // "04/02/2026"
+        fechaInicioLaboral,   // "04/02/2026"
+        nombreContratista,
+        cedulaContratista,
+        objetoContrato,
+        valorTotal,
+        valorMensual,
+        cantidadMeses,
+    } = datosContrato;
+
+    const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
+
+    // ── HELPER: celda de tabla ──
+    const crearCelda = (texto, opciones = {}) => {
+        const { bold = false, ancho = 3500, fondo = null } = opciones;
+        return new docx.TableCell({
+            width: { size: ancho, type: docx.WidthType.DXA },
+            borders: {
+                top:    { style: docx.BorderStyle.SINGLE, size: 4, color: "000000" },
+                bottom: { style: docx.BorderStyle.SINGLE, size: 4, color: "000000" },
+                left:   { style: docx.BorderStyle.SINGLE, size: 4, color: "000000" },
+                right:  { style: docx.BorderStyle.SINGLE, size: 4, color: "000000" },
+            },
+            shading: fondo ? { fill: fondo, type: docx.ShadingType.CLEAR } : undefined,
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [
+                new docx.Paragraph({
+                    children: [
+                        new docx.TextRun({ text: texto, bold, size: 20, font: "Arial" })
+                    ],
+                    alignment: docx.AlignmentType.LEFT,
+                })
+            ]
+        });
+    };
+
+    // ── FILAS DE LA TABLA ──
+    const filas = [
+        // Fila 1
+        new docx.TableRow({ children: [
+            crearCelda("FECHA ELABORACION",  { bold: true, ancho: 3500 }),
+            crearCelda(fechaElaboracion,                  { ancho: 6860 }),
+        ]}),
+        // Fila 2
+        new docx.TableRow({ children: [
+            crearCelda("CIUDAD",             { bold: true, ancho: 3500 }),
+            crearCelda("El Banco – Magdalena",            { ancho: 6860 }),
+        ]}),
+        // Fila 3
+        new docx.TableRow({ children: [
+            crearCelda("CONTRATO No",        { bold: true, ancho: 3500 }),
+            crearCelda(`${numeroContrato} DE FECHA ${fechaContrato}`, { ancho: 6860 }),
+        ]}),
+        // Fila 4 — objeto (celda de valor puede ser multilinea, docx lo maneja solo)
+        new docx.TableRow({ children: [
+            crearCelda("OBJETO",             { bold: true, ancho: 3500 }),
+            crearCelda(`"${objetoContrato}"`,             { ancho: 6860 }),
+        ]}),
+        // Fila 5
+        new docx.TableRow({ children: [
+            crearCelda("VALOR",              { bold: true, ancho: 3500 }),
+            crearCelda(`$ ${valorTotal}`,                 { ancho: 6860 }),
+        ]}),
+        // Fila 6
+        new docx.TableRow({ children: [
+            crearCelda("ANTICIPO:",          { bold: true, ancho: 3500 }),
+            crearCelda("$ 0",                             { ancho: 6860 }),
+        ]}),
+        // Fila 7 — forma de pago
+        new docx.TableRow({ children: [
+            crearCelda("FORMA DE PAGO:",     { bold: true, ancho: 3500 }),
+            crearCelda(
+                `El valor total del contrato será cancelado en ${cantidadMeses} cuotas mensuales vencidas, por valor de $ ${valorMensual} cada una, previo informe de actividades, pago a su seguridad social y recibido de conformidad por parte del Supervisor del Contrato.`,
+                { ancho: 6860 }
+            ),
+        ]}),
+        // Fila 8
+        new docx.TableRow({ children: [
+            crearCelda("NOMBRE DEL CONTRATISTA", { bold: true, ancho: 3500 }),
+            crearCelda(nombreContratista,              { ancho: 6860 }),
+        ]}),
+        // Fila 9
+        new docx.TableRow({ children: [
+            crearCelda("NOMBRE SUPERVISOR", { bold: true, ancho: 3500 }),
+            crearCelda(supervisora.nombre.toUpperCase(), { ancho: 6860 }),
+        ]}),
+        // Fila 10
+        new docx.TableRow({ children: [
+            crearCelda("CARGO:",             { bold: true, ancho: 3500 }),
+            crearCelda("SECRETARIA ADMINISTRATIVA Y FINANCIERA", { ancho: 6860 }),
+        ]}),
+        // Fila 11
+        new docx.TableRow({ children: [
+            crearCelda("PLAZO INICIAL",      { bold: true, ancho: 3500 }),
+            crearCelda(`${cantidadMeses} (${cantidadMeses}) meses`, { ancho: 6860 }),
+        ]}),
+        // Fila 12
+        new docx.TableRow({ children: [
+            crearCelda("Garantías",          { bold: true, ancho: 3500 }),
+            crearCelda("No se solicitaron",               { ancho: 6860 }),
+        ]}),
+        // Fila 13
+        new docx.TableRow({ children: [
+            crearCelda("FECHA DE INICIO",   { bold: true, ancho: 3500 }),
+            crearCelda(fechaInicioLaboral,                { ancho: 6860 }),
+        ]}),
+    ];
+
+    const tabla = new docx.Table({
+        width: { size: 10360, type: docx.WidthType.DXA },
+        columnWidths: [3500, 6860],
+        rows: filas,
+    });
+
+    // ── PÁRRAFOS ──
+    const parrafos = [
+
+        // Título
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({
+                    text: `ACTA DE INICIO DEL CONTRATO DE PRESTACIÓN DE SERVICIOS DE APOYO A LA GESTION No ${numeroContrato} DE FECHA ${fechaContrato}`,
+                    bold: true, size: 22, font: "Arial"
+                })
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        // Tabla de datos
+        tabla,
+
+        // Espacio post-tabla
+        new docx.Paragraph({
+            children: [new docx.TextRun({ text: "", size: 24, font: "Arial" })],
+            spacing: { after: 200 }
+        }),
+
+        // Primer párrafo narrativo
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: `Los suscritos ${supervisora.nombre}, identificada con la cédula de ciudadanía No `, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: supervisora.documento, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: " expedida en El Banco, Magdalena, en calidad de Secretaria Administrativa y Financiera Municipal, designada por el señor alcalde municipal como supervisora del presente contrato, ", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: nombreContratista, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: ", identificado con cedula de ciudadanía No ", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: cedulaContratista, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: " de El Banco, Magdalena, dejan constancia del inicio del contrato anteriormente citado, previo cumplimiento de los requisitos de perfeccionamiento y presentación de todos los soportes documentales exigidos.", size: 24, font: "Arial" }),
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        // Segundo párrafo
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "Para constancia de lo anterior, se firma la presente acta bajo la responsabilidad expresa de los que intervienen en ella.", size: 24, font: "Arial" })
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { after: 480, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        // Firmas — "Firmado en original"
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Firmado en original", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Firmado en original", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+                { type: docx.TabStopType.CENTER, position: 7020 },
+            ],
+            alignment: docx.AlignmentType.LEFT,
+            spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        // Nombres
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: supervisora.nombre.toUpperCase(), bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: nombreContratista.toUpperCase(), bold: true, size: 24, font: "Arial" }),
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+                { type: docx.TabStopType.CENTER, position: 7020 },
+            ],
+            spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        // Roles
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Supervisor del contrato", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Contratista", size: 24, font: "Arial" }),
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+                { type: docx.TabStopType.CENTER, position: 7020 },
+            ],
+            spacing: { before: 200, after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+    ];
+
+    // ── SECCIÓN CONFIG ──
+    const sectionConfig = {
+        properties: {
+            page: {
+                size: { width: 12240, height: 20160 },
+                margin: { top: 2880, right: 1440, left: 1440, bottom: 4320 }
+            }
+        },
+        children: parrafos
+    };
+
+    // ── MARCA DE AGUA ──
+    if (imagenBlob) {
+        try {
+            const marcaDeAgua = new docx.ImageRun({
+                data: imagenBlob,
+                transformation: { width: 816, height: 1293 },
+                floating: {
+                    horizontalPosition: {
+                        relative: docx.HorizontalPositionRelativeFrom.PAGE,
+                        align: docx.HorizontalPositionAlign.CENTER
+                    },
+                    verticalPosition: {
+                        relative: docx.VerticalPositionRelativeFrom.PAGE,
+                        offset: 0
+                    },
+                    behindDocument: true,
+                },
+            });
+            sectionConfig.headers = {
+                default: new docx.Header({
+                    children: [new docx.Paragraph({ children: [marcaDeAgua] })]
+                })
+            };
+        } catch (error) {
+            console.error('❌ Error marca de agua:', error);
+        }
+    }
+
+    const doc = new docx.Document({ sections: [sectionConfig] });
+    const blob = await docx.Packer.toBlob(doc);
+
+    // ── SUBIR A LA MISMA CARPETA DEL CONTRATO ──
+    const nombreArchivo = `ActaDeInicio_${numeroContrato}_${nombreContratista.replace(/\s+/g, '_')}.docx`;
+    await subirArchivoACarpeta(blob, nombreArchivo, carpetaId);
+}
+
+
 // ==================== SUBIR ARCHIVO A CARPETA YA EXISTENTE ====================
 async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
     mostrarLoader(`🚀 Subiendo resolución a Drive...`);
@@ -1852,6 +2158,7 @@ async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
         mostrarMensaje(`✔️ ¡Resolución de supervisor generada y subida a Drive!`, 'success');
         mostrarMensaje(`✔️ ¡Resolución de Idoneidad y Experiencia generada y subida a Drive!`, 'success');
         mostrarMensaje(`✔️ ¡Resolución de Certificado No Existencia generada y subida a Drive!`, 'success');
+        mostrarMensaje(`✔️ ¡Resolución de Acta de Inicio y subida a Drive!`, 'success');
     } else {
         throw new Error(result.error?.message || "Error subiendo resolución");
     }
