@@ -679,11 +679,53 @@ const estudioPrevio = {
             },
             {
                 numero: "4",
-                titulo: "4. PLAZO DE EJECUCIÓN – VALOR ESTIMADO – FORMA DE PAGO – LUGAR DE EJECUCION DEL CONTRATO:",
+                titulo: "PLAZO DE EJECUCIÓN – VALOR ESTIMADO – FORMA DE PAGO – LUGAR DE EJECUCION DEL CONTRATO:",
                 parrafos: [
-                    "El plazo de ejecución del presente contrato será de [VALOR_MESES] meses, contados a partir de la suscripción del presente contrato. El valor del contrato asciende a la suma de NUEVE MILLONES DOSCIENTOS CINCUENTA MIL PESOS M/CTE ($ 9.250.000), incluyendo costos directos e indirectos que ocasione la ejecución del contrato. El valor total del contrato será cancelado en cinco cuotas mensuales vencidas, por valor de $ 1.850.000 cada una, previo informe de actividades, pago a su seguridad social y recibido de conformidad por parte del Supervisor del Contrato. El lugar de ejecución del presente contrato es en el Municipio de El Banco – Magdalena.",
+                    "El plazo de ejecución del presente contrato será de [VALOR_MESES] meses, contados a partir de la suscripción del presente contrato. El valor del contrato asciende a la suma de [VALOR_LETRA] ($ [VALOR_TOTAL]), incluyendo costos directos e indirectos que ocasione la ejecución del contrato. El valor total del contrato será cancelado en cinco cuotas mensuales vencidas, por valor de $ [VALOR_MES] cada una, previo informe de actividades, pago a su seguridad social y recibido de conformidad por parte del Supervisor del Contrato. El lugar de ejecución del presente contrato es en el Municipio de El Banco – Magdalena.",
                     "",
                 ]
+            },
+            {
+                numero: "5",
+                titulo: "LOS CRITERIOS PARA SELECCIONAR LA OFERTA MAS FAVORABLE:",
+                parrafos: [
+                    "Según el artículo 2.2.1.2.1.4.9, del Decreto 1082 de 2015, no es necesario que la Entidad Estatal haya obtenido previamente varias ofertas, de lo cual el ordenador del gasto debe dejar constancia escrita. En este caso se hizo el estudio de una propuesta con su respectiva hoja de vida.",
+                ]
+            },
+            {
+                numero: "6",
+                titulo: "ANÁLISIS DE RIESGO Y LA FORMA DE MITIGARLO:",
+                parrafos:[
+                    "Para efectos de la exigencia de garantías en el presente proceso contractual, la Alcaldía Municipal considera que para el cumplimiento del objeto contractual no se requiere una cualificación especial, es decir, que, de acuerdo al análisis y asignación de riesgos, las obligaciones específicas establecidas no contienen un nivel de complejidad que conlleven o produzcan alguna vicisitud en la ejecución del contrato. "
+                ]
+            },
+            {
+                numero: "7",
+                titulo: "GARANTÍAS",
+                parrafos: [
+                    " Por otro lado, teniendo en cuenta que los pagos se realizarán una vez sea verificado el cumplimiento del objeto contractual por parte del supervisor del mismo, impidiendo algún perjuicio para la entidad, no se exigirán garantías en virtud de lo establecido en el Art.  2.2.1.2.1.4.5 del decreto 1082 de 2015. ",
+                ]
+            },
+            {
+                numero: "8",
+                titulo: "INDICACIÓN SI EL PROCESO DE CONTRATACIÓN ESTÁ COBIJADO POR UN ACUERDO COMERCIAL:",
+                parrafos: [
+                    "La presente contratación no se encuentra cobijada por ningún Acuerdo Internacional o Tratado de Libre Comercio vigente para el Estado Colombiano.",
+                ]
+            },
+            {
+                numero: "9.",
+                titulo: "SUPERVISIÓN:",
+                parrafos: [
+                    "La supervisión del contrato resultante del presente proceso de selección estará a cargo del jefe de la Secretaria Administrativa y Financiera. ",
+                    "Por lo anterior se declara que es conveniente y oportuna la contratación de personal de apoyo a la gestión cuyo perfil se señaló anteriormente para cumplir con el objeto contractual requerido "
+                ]
+            },
+            {
+                firma: "FIRMADO EN ORIGINAL",
+                titular: "ISOLINA ALICIA VIDES MARTINEZ",
+                parrafos: "SECRETARIA ADMINISTRATIVA Y FINANCIERA"
+
             }
         ]
     
@@ -1392,6 +1434,7 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
         await generarIdoneidadYExperiencia(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarCertificadoNoExistencia(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarActaDeInicio(supervisora, _datosContratoActual, _carpetaIdActual);
+        await generarEstudiosPrevios(supervisora, _datosContratoActual, _carpetaIdActual);
         limpiarYcerrar();
     } catch (error) {
         console.error('❌ Error generando documentos:', error);
@@ -2181,6 +2224,129 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
     const nombreArchivo = `ActaDeInicio_${numeroContrato}_${nombreContratista.replace(/\s+/g, '_')}.docx`;
     await subirArchivoACarpeta(blob, nombreArchivo, carpetaId);
 }
+
+
+
+// ================================= GENERAR DOCUMENTO DE ESTUDIO PREVIOS ==========================
+
+async function generarEstudiosPrevios( datosContrato, carpetaId) {
+    const {
+        numeroContrato,
+        nombreContratista,
+        valorLetras,
+        valorTotal,
+        valorMensual,
+        cantidadMeses,
+        tipoEstudio  // ← el valor del select: "1", "2" o "3"
+    } = datosContrato;
+
+    // ── SELECCIONAR EL ESTUDIO SEGÚN EL INPUT ──
+    const estudioSeleccionado = estudioPrevio[tipoEstudio];
+    if (!estudioSeleccionado) {
+        console.error(`❌ No existe estudio previo para el tipo: ${tipoEstudio}`);
+        return;
+    }
+
+    // ── FUNCIÓN DE REEMPLAZOS ──
+    function aplicarReemplazos(texto) {
+        return texto
+            .replace(/\[VALOR_LETRA\]/g,   valorLetras)
+            .replace(/\[VALOR_TOTAL\]/g,   valorTotal)
+            .replace(/\[VALOR_MES\]/g,     valorMensual)
+            .replace(/\[VALOR_MESES\]/g,   cantidadMeses);
+    }
+
+    // ── ARMAR PÁRRAFOS DOCX ──
+    const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
+
+    const parrafos = [
+        // Título principal
+        new docx.Paragraph({
+            children: [new docx.TextRun({
+                text: estudioSeleccionado.titulo,
+                bold: true, size: 24, font: "Arial"
+            })],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 400, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+    ];
+
+    // ── ITERAR SECCIONES ──
+    estudioSeleccionado.secciones.forEach(seccion => {
+
+        // Título de sección
+        parrafos.push(new docx.Paragraph({
+            children: [new docx.TextRun({
+                text: `${seccion.numero}.   ${seccion.titulo}`,
+                bold: true, size: 24, font: "Arial"
+            })],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { before: 300, after: 200, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }));
+
+        // Párrafos de la sección (con reemplazos aplicados)
+        seccion.parrafos.forEach(texto => {
+            if (!texto) return; // saltar párrafos vacíos ""
+
+            const textoFinal = aplicarReemplazos(texto);
+
+            parrafos.push(new docx.Paragraph({
+                children: [new docx.TextRun({
+                    text: textoFinal, size: 24, font: "Arial"
+                })],
+                alignment: docx.AlignmentType.JUSTIFIED,
+                spacing: { after: 200, line: 240, lineRule: docx.LineRuleType.AUTO },
+                indent: { left: 720 }
+            }));
+        });
+    });
+
+    // ── SECCIÓN CONFIG ──
+    const sectionConfig = {
+        properties: {
+            page: {
+                size: { width: 12240, height: 20160 },
+                margin: { top: 2880, right: 1440, left: 1440, bottom: 4320 }
+            }
+        },
+        children: parrafos
+    };
+
+    // ── MARCA DE AGUA ──
+    if (imagenBlob) {
+        try {
+            const marcaDeAgua = new docx.ImageRun({
+                data: imagenBlob,
+                transformation: { width: 816, height: 1293 },
+                floating: {
+                    horizontalPosition: {
+                        relative: docx.HorizontalPositionRelativeFrom.PAGE,
+                        align: docx.HorizontalPositionAlign.CENTER
+                    },
+                    verticalPosition: {
+                        relative: docx.VerticalPositionRelativeFrom.PAGE,
+                        offset: 0
+                    },
+                    behindDocument: true,
+                },
+            });
+            sectionConfig.headers = {
+                default: new docx.Header({
+                    children: [new docx.Paragraph({ children: [marcaDeAgua] })]
+                })
+            };
+        } catch (error) {
+            console.error('❌ Error marca de agua:', error);
+        }
+    }
+
+    const doc = new docx.Document({ sections: [sectionConfig] });
+    const blob = await docx.Packer.toBlob(doc);
+
+    const nombreArchivo = `EstudiosPrevios_${numeroContrato}_${nombreContratista.replace(/\s+/g, '_')}.docx`;
+    await subirArchivoACarpeta(blob, nombreArchivo, carpetaId);
+}
+
 
 
 // ==================== SUBIR ARCHIVO A CARPETA YA EXISTENTE ====================
