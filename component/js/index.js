@@ -1802,7 +1802,7 @@ async function generarCertificadoNoExistencia(supervisora, dataosContrato, carpe
          new docx.Paragraph({
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "SECRETARIA ADMINISTRATIVA Y FINANCIERA", bold: true, size: 24, font: "Arial"}),
+                new docx.TextRun({ text: "ADJUNTAR CARGO", bold: true, size: 24, font: "Arial"}),
 
             ],
             tabStops: [
@@ -1875,8 +1875,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
     const fechaInicioLaboralInput = document.getElementById('fechaInicioLaboral').value;
     const {
         numeroContrato,
-        fechaContrato,        // "28 DE ENERO DE 2026"
-        fechaElaboracion,     // "04/02/2026"  // "04/02/2026"
+        fechaContrato,        // "28 DE ENERO DE 2026",     // "04/02/2026"  // "04/02/2026"
         nombreContratista,
         cedulaContratista,
         objetoContrato,
@@ -1914,8 +1913,8 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
     const filas = [
         // Fila 1
         new docx.TableRow({ children: [
-            crearCelda("FECHA ELABORACION",  { bold: true, ancho: 3500 }),
-            crearCelda(fechaElaboracion,                  { ancho: 6860 }),
+            crearCelda("FECHA ELABORACIÓN",  { bold: true, ancho: 3500 }),
+            crearCelda(fechaInicioLaboralInput,                  { ancho: 6860 }),
         ]}),
         // Fila 2
         new docx.TableRow({ children: [
@@ -1995,7 +1994,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
         new docx.Paragraph({
             children: [
                 new docx.TextRun({
-                    text: `ACTA DE INICIO DEL CONTRATO DE PRESTACIÓN DE SERVICIOS DE APOYO A LA GESTION No ${numeroContrato} DE FECHA ${fechaContrato}`,
+                    text: `ACTA DE INICIO DEL CONTRATO DE PRESTACIÓN DE SERVICIOS DE APOYO A LA GESTIÓN No ${numeroContrato} DE FECHA ${fechaContrato}`,
                     bold: true, size: 22, font: "Arial"
                 })
             ],
@@ -2019,7 +2018,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
                 new docx.TextRun({ text: supervisora.documento, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: " expedida en El Banco, Magdalena, en calidad de Secretaria Administrativa y Financiera Municipal, designada por el señor alcalde municipal como supervisora del presente contrato, ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: nombreContratista, bold: true, size: 24, font: "Arial" }),
-                new docx.TextRun({ text: ", identificado con cedula de ciudadanía No ", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: ", identificado con cédula de ciudadanía No ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: cedulaContratista, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: " de El Banco, Magdalena, dejan constancia del inicio del contrato anteriormente citado, previo cumplimiento de los requisitos de perfeccionamiento y presentación de todos los soportes documentales exigidos.", size: 24, font: "Arial" }),
             ],
