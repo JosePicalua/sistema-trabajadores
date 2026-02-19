@@ -1335,6 +1335,7 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
     try {
         await generarResolucionSupervisor(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarIdoneidadYExperiencia(supervisora, _datosContratoActual, _carpetaIdActual);
+        await generarCertificadoNoExistencia(supervisora, _datosContratoActual, _carpetaIdActual);
         limpiarYcerrar();
     } catch (error) {
         console.error('❌ Error generando documentos:', error);
