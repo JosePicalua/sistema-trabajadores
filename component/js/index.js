@@ -1620,7 +1620,7 @@ async function generarIdoneidadYExperiencia(supervisora, dataosContrato, carpeta
         new docx.Paragraph({
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "Firmado en original", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+                new docx.TextRun({ text: "Firmado en original", bold: true, size: 24, font: "Arial", color: "FF0000"}),
                 
             ],
             tabStops: [
@@ -1633,7 +1633,7 @@ async function generarIdoneidadYExperiencia(supervisora, dataosContrato, carpeta
         new docx.Paragraph({
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "ISOLINA ALICIA VIDES MARTINEZ", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+                new docx.TextRun({ text: "ISOLINA ALICIA VIDES MARTINEZ", bold: true, size: 24, font: "Arial"}),
 
             ],
             tabStops: [
@@ -1646,7 +1646,7 @@ async function generarIdoneidadYExperiencia(supervisora, dataosContrato, carpeta
          new docx.Paragraph({
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "SECRETARIA ADMINISTRATIVA Y FINANCIERA", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+                new docx.TextRun({ text: "SECRETARIA ADMINISTRATIVA Y FINANCIERA", bold: true, size: 24, font: "Arial"}),
 
             ],
             tabStops: [
