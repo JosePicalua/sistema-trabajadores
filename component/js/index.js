@@ -2381,6 +2381,7 @@ async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
         mostrarMensaje(`✔️ ¡Resolución de Idoneidad y Experiencia generada y subida a Drive!`, 'success');
         mostrarMensaje(`✔️ ¡Resolución de Certificado No Existencia generada y subida a Drive!`, 'success');
         mostrarMensaje(`✔️ ¡Resolución de Acta de Inicio y subida a Drive!`, 'success');
+        mostrarMensaje(`✔️ ¡Resolución de Estuio Previo y subida a Drive!`, 'success');
     } else {
         throw new Error(result.error?.message || "Error subiendo resolución");
     }
