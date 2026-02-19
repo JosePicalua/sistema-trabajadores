@@ -660,7 +660,7 @@ const estudioPrevio = {
             },                         // ← cierra objeto sección 1
             {  
                 numero: "2",
-                    titulo: "DESCRIPCION DEL OBJETO A CONTRATAR CON SUS ESPECIFICACIONES ",
+                    titulo: "DESCRIPCIÓN DEL OBJETO A CONTRATAR CON SUS ESPECIFICACIONES ",
                     parrafos: [
                         "PRESTACION DE SERVICIOS PROFESIONALES Y DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERIA - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDIA MUNICIPAL DE EL BANCO, MAGDALENA. ",
                         "CLASIFICACION DEL SERVICIO: CODIGO UNSPSC 80111620.",
@@ -679,7 +679,7 @@ const estudioPrevio = {
             },
             {
                 numero: "4",
-                titulo: "PLAZO DE EJECUCIÓN – VALOR ESTIMADO – FORMA DE PAGO – LUGAR DE EJECUCION DEL CONTRATO:",
+                titulo: "PLAZO DE EJECUCIÓN – VALOR ESTIMADO – FORMA DE PAGO – LUGAR DE EJECUCIÓN DEL CONTRATO:",
                 parrafos: [
                     "El plazo de ejecución del presente contrato será de [VALOR_MESES] meses, contados a partir de la suscripción del presente contrato. El valor del contrato asciende a la suma de [VALOR_LETRA] ($ [VALOR_TOTAL]), incluyendo costos directos e indirectos que ocasione la ejecución del contrato. El valor total del contrato será cancelado en cinco cuotas mensuales vencidas, por valor de $ [VALOR_MES] cada una, previo informe de actividades, pago a su seguridad social y recibido de conformidad por parte del Supervisor del Contrato. El lugar de ejecución del presente contrato es en el Municipio de El Banco – Magdalena.",
                     "",
@@ -696,7 +696,7 @@ const estudioPrevio = {
                 numero: "6",
                 titulo: "ANÁLISIS DE RIESGO Y LA FORMA DE MITIGARLO:",
                 parrafos:[
-                    "Para efectos de la exigencia de garantías en el presente proceso contractual, la Alcaldía Municipal considera que para el cumplimiento del objeto contractual no se requiere una cualificación especial, es decir, que, de acuerdo al análisis y asignación de riesgos, las obligaciones específicas establecidas no contienen un nivel de complejidad que conlleven o produzcan alguna vicisitud en la ejecución del contrato. "
+                    "Para efectos de la exigencia de garantías en el presente proceso contractual, la Alcaldía Municipal considera que para el cumplimiento del objeto contractual no se requiere una cualificación especial, es decir, que, de acuerdo al análisis y asignación de riesgos, las obligaciones específicas establecidas no contienen un nivel de complejidad que conlleva o produzcan alguna vicisitud en la ejecución del contrato. "
                 ]
             },
             {
