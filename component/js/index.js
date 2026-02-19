@@ -757,6 +757,8 @@ async function obtenerImagenMarcaAgua(url) {
     }
 }
 
+
+
 // ==================== GENERAR CONTRATO ====================
 btnGenerarContrato.addEventListener('click', async function() {
     // Validaciones del formulario
@@ -1324,7 +1326,11 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                     cedulaContratista: empleadoActual.cedula,
                     valorLetras: convertirNumeroALetras(parseInt(limpiarNumero(inputTotal.value))),
                     valorTotal: formatearNumero(limpiarNumero(inputTotal.value)),
-                    objetoContrato: objetosContrato[objetoContratoSelect.value] || ""
+                    objetoContrato: objetosContrato[objetoContratoSelect.value] || "",
+                    // ✅ AGREGAR ESTOS DOS:
+                    tipoEstudio: objetoContratoSelect.value,         // ← "1", "2" o "3"
+                    cantidadMeses: inputMeses.value,                 // ← también faltaba en _datosContratoActual
+                    valorMensual: limpiarNumero(inputMensual.value)  // ← también faltaba
                 }, nuevaCarpetaId);  // ← pasa la carpetaId creada
             }
 
@@ -1434,6 +1440,7 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
         await generarIdoneidadYExperiencia(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarCertificadoNoExistencia(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarActaDeInicio(supervisora, _datosContratoActual, _carpetaIdActual);
+        // ✅ CORREGIDO: agregar supervisora como primer parámetro
         await generarEstudiosPrevios(supervisora, _datosContratoActual, _carpetaIdActual);
         limpiarYcerrar();
     } catch (error) {
@@ -2229,7 +2236,8 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
 
 // ================================= GENERAR DOCUMENTO DE ESTUDIO PREVIOS ==========================
 
-async function generarEstudiosPrevios( datosContrato, carpetaId) {
+// ✅ CORREGIDO: agregar supervisora como parámetro
+async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
     const {
         numeroContrato,
         nombreContratista,
@@ -2237,35 +2245,27 @@ async function generarEstudiosPrevios( datosContrato, carpetaId) {
         valorTotal,
         valorMensual,
         cantidadMeses,
-        tipoEstudio  // ← el valor del select: "1", "2" o "3"
+        tipoEstudio
     } = datosContrato;
 
-    // ── SELECCIONAR EL ESTUDIO SEGÚN EL INPUT ──
     const estudioSeleccionado = estudioPrevio[tipoEstudio];
     if (!estudioSeleccionado) {
         console.error(`❌ No existe estudio previo para el tipo: ${tipoEstudio}`);
         return;
     }
 
-    // ── FUNCIÓN DE REEMPLAZOS ──
     function aplicarReemplazos(texto) {
         return texto
-            .replace(/\[VALOR_LETRA\]/g,   valorLetras)
-            .replace(/\[VALOR_TOTAL\]/g,   valorTotal)
-            .replace(/\[VALOR_MES\]/g,     valorMensual)
-            .replace(/\[VALOR_MESES\]/g,   cantidadMeses);
+            .replace(/\[VALOR_LETRA\]/g,  valorLetras)
+            .replace(/\[VALOR_TOTAL\]/g,  valorTotal)
+            .replace(/\[VALOR_MES\]/g,    valorMensual)
+            .replace(/\[VALOR_MESES\]/g,  cantidadMeses);
     }
 
-    // ── ARMAR PÁRRAFOS DOCX ──
     const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
-
     const parrafos = [
-        // Título principal
         new docx.Paragraph({
-            children: [new docx.TextRun({
-                text: estudioSeleccionado.titulo,
-                bold: true, size: 24, font: "Arial"
-            })],
+            children: [new docx.TextRun({ text: estudioSeleccionado.titulo, bold: true, size: 24, font: "Arial" })],
             alignment: docx.AlignmentType.CENTER,
             spacing: { after: 400, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
