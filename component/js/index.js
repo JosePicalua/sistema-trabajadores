@@ -572,7 +572,7 @@ const supervisoresData = {
 };
 
 const objetosContrato = {
-    "1": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERÍA",
+    "1": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERO - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDÍA MUNICIPAL DE EL BANCO, MAGDALENA",
     "2": "OTRO OBJETO DE CONTRATO"
 };
 
@@ -584,7 +584,7 @@ const clausulas = {
     "1": {
         "CLÁUSULA PRIMERA - DEFINICIONES:": "Los términos definidos son utilizados en singular y en plural de acuerdo con el contexto en el cual son utilizados. Otros términos utilizados con mayúscula inicial deben ser entendidos de acuerdo con la definición contenida en el Decreto 1082 de 2015. Los términos no definidos en los documentos referenciados o en la presente cláusula, deben entenderse de acuerdo con su significado natural y obvio.",
         
-        "CLÁUSULA SEGUNDA - OBJETO DEL CONTRATO:": "PRESTACION DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERIA - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDIA MUNICIPAL DE EL BANCO, MAGDALENA.",
+        "CLÁUSULA SEGUNDA - OBJETO DEL CONTRATO:": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERO - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDIA MUNICIPAL DE EL BANCO, MAGDALENA.",
         
         "CLÁUSULA TERCERA – ACTIVIDADES ESPECÍFICAS DEL CONTRATO:": "1. Realizar labores de mensajería en los diferentes procesos que se ejecuten o realicen las diferentes dependencias de la alcaldía municipal. 2. Redactar y preparar oficios, citaciones y texto en general en cumplimiento de los objetivos de las oficinas para darles el respectivo tramite. 3. Velar por la custodia de la información y documentos que por razón de las actividades realizadas tengan bajo su cuidado y mantener la reserva de la misma. 4. Llevar en forma correcta actualizada y de acuerdo con las instrucciones recibidas, el archivo de los documentos que se han encomendado aplicado a demás, las normas generales de archivo. 5. Responder y velar por el uso y mantenimiento de los bienes y elementos entregados por el municipio para el ejercicio de las actividades. 6. Mantener el orden y presentación de la oficina a su cargo. 7. Las demás que se requieran en razón de la ejecución del servicio y las demás que sean asignada por el supervisor del contrato.",
         
@@ -1561,9 +1561,14 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
     await subirArchivoACarpeta(blob, nombreArchivo, carpetaId);
 }
 
-// =================== CREACION DE WORD PARA 
+
+
+
+// =================== CREACION DE WORD PARA IDONEIDAD Y EXPERIENCIA =============
+
+
 async function generarIdoneidadYExperiencia(supervisora, dataosContrato, carpetaId) {
-    const { numeroContrato, fechaContrato, nombreContratista, cedulaContratista, valorLetras, valorTotal, objetoContrato } = dataosContrato;
+    const { numeroContrato, fechaContrato, nombreContratista, cedulaContratista, objetoContrato } = dataosContrato;
 
     const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
 
@@ -1732,6 +1737,7 @@ async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
     if (res.ok) {
         console.log("✅ Resolución subida con ID:", result.id);
         mostrarMensaje(`✔️ ¡Resolución de supervisor generada y subida a Drive!`, 'success');
+        mostrarMensaje(`✔️ ¡Resolución de Idoneidad y Experiencia generada y subida a Drive!`, 'success');
     } else {
         throw new Error(result.error?.message || "Error subiendo resolución");
     }
