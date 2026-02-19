@@ -2240,6 +2240,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
 // ✅ CORREGIDO: agregar supervisora como parámetro
 async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
     console.log('🔍 datosContrato recibido:', datosContrato);
+
     const {
         numeroContrato,
         nombreContratista,
@@ -2250,12 +2251,14 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
         tipoEstudio
     } = datosContrato;
 
+    // ── SELECCIONAR EL ESTUDIO SEGÚN EL INPUT ──
     const estudioSeleccionado = estudioPrevio[tipoEstudio];
     if (!estudioSeleccionado) {
         console.error(`❌ No existe estudio previo para el tipo: ${tipoEstudio}`);
         return;
     }
 
+    // ── FUNCIÓN DE REEMPLAZOS ──
     function aplicarReemplazos(texto) {
         return texto
             .replace(/\[VALOR_LETRA\]/g,  valorLetras)
@@ -2265,17 +2268,24 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
     }
 
     const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
+
     const parrafos = [
+        // Título principal
         new docx.Paragraph({
-            children: [new docx.TextRun({ text: estudioSeleccionado.titulo, bold: true, size: 24, font: "Arial" })],
+            children: [new docx.TextRun({
+                text: estudioSeleccionado.titulo,
+                bold: true, size: 24, font: "Arial"
+            })],
             alignment: docx.AlignmentType.CENTER,
             spacing: { after: 400, line: 240, lineRule: docx.LineRuleType.AUTO }
         }),
     ];
 
-    estudioSeleccionado.secciones.forEach(seccion => {
+    // ── ITERAR SECCIONES ──
+    estudioSeleccionado.secciones.forEach((seccion, index) => {
+        console.log(`📄 Procesando sección ${index}:`, seccion);
 
-        // ✅ Si es sección de firma, renderizar diferente y saltar
+        // ✅ GUARD 1: sección de firma (no tiene numero ni parrafos array)
         if (seccion.firma) {
             parrafos.push(
                 new docx.Paragraph({
@@ -2306,7 +2316,13 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
             return; // ← saltar el resto del forEach para esta sección
         }
 
-        // Secciones normales — título
+        // ✅ GUARD 2: protección extra — si parrafos no es array, saltar sin crashear
+        if (!Array.isArray(seccion.parrafos)) {
+            console.warn(`⚠️ Sección ${index} omitida — parrafos no es array:`, seccion);
+            return;
+        }
+
+        // ── Título de sección normal ──
         parrafos.push(new docx.Paragraph({
             children: [new docx.TextRun({
                 text: `${seccion.numero}.   ${seccion.titulo}`,
@@ -2316,11 +2332,16 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
             spacing: { before: 300, after: 200, line: 240, lineRule: docx.LineRuleType.AUTO }
         }));
 
-        // Párrafos normales
+        // ── Párrafos de la sección (con reemplazos aplicados) ──
         seccion.parrafos.forEach(texto => {
-            if (!texto) return;
+            if (!texto) return; // saltar párrafos vacíos ""
+
+            const textoFinal = aplicarReemplazos(texto);
+
             parrafos.push(new docx.Paragraph({
-                children: [new docx.TextRun({ text: aplicarReemplazos(texto), size: 24, font: "Arial" })],
+                children: [new docx.TextRun({
+                    text: textoFinal, size: 24, font: "Arial"
+                })],
                 alignment: docx.AlignmentType.JUSTIFIED,
                 spacing: { after: 200, line: 240, lineRule: docx.LineRuleType.AUTO },
                 indent: { left: 720 }
