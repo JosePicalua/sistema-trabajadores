@@ -348,8 +348,7 @@ function convertirNumeroALetras(num) {
             todosLosEmpleados = rows.map(fila => ({
                 nombre_completo: fila[0] || '',
                 cedula:          fila[1] || '',
-                estado:          fila[2] || '',
-                claseEstado:     obtenerClaseEstado(fila[2] || '') // ✅ AGREGAR ESTA LÍNEA
+                estado:          fila[2] || ''
             }));
 
             mostrarEmpleados(todosLosEmpleados);
@@ -393,15 +392,35 @@ function convertirNumeroALetras(num) {
 
         empleados.forEach(empleado => {
             const fila = document.createElement('tr');
-            fila.style.borderBottom = "1px solid #f0f0f0";
 
-            const estadoInterno = (empleado.estado || '').toLowerCase();
-            const esGenerado = estadoInterno.includes('documentos generados');
+            const esGenerado = (empleado.estado || '').toLowerCase().includes('documentos generados');
 
-            // ── COLOR TD Y BADGE según estado ──
-            const tdFondo     = esGenerado ? '#d4edda' : '#fff3cd';
-            const badgeColor  = esGenerado ? '#28a745' : '#f39c12';
-            const badgeTexto  = esGenerado ? 'DOCUMENTOS GENERADOS' : 'PENDIENTE';
+            // ── ESTILO FILA COMPLETA ──
+            if (esGenerado) {
+                fila.style.cssText = `
+                    background-color: #d4edda;
+                    pointer-events: none;
+                    opacity: 0.75;
+                    cursor: not-allowed;
+                `;
+            } else {
+                fila.style.cssText = `
+                    background-color: #fff8e1;
+                    border-bottom: 1px solid #f0f0f0;
+                `;
+            }
+
+            const badgeColor = esGenerado ? '#28a745' : '#f39c12';
+            const badgeTexto = esGenerado ? 'DOCUMENTOS GENERADOS' : 'PENDIENTE';
+
+            // ── Botón bloqueado si ya está generado ──
+            const btnGestionar = esGenerado
+                ? `<button class="btn-gestionar" disabled style="opacity: 0.4; cursor: not-allowed;">
+                    <span style="margin-right: 6px;">✅</span> Completado
+                </button>`
+                : `<button onclick="gestionarClicEmpleado('${empleado.cedula}')" class="btn-gestionar">
+                    <span style="margin-right: 6px;">📄</span> Gestionar
+                </button>`;
 
             fila.innerHTML = `
                 <td style="padding: 15px; vertical-align: middle;">
@@ -411,7 +430,7 @@ function convertirNumeroALetras(num) {
                 <td style="padding: 15px; vertical-align: middle; font-family: 'JetBrains Mono', monospace; color: #7f8c8d; font-size: 0.9rem;">
                     ${empleado.cedula}
                 </td>
-                <td style="padding: 15px; vertical-align: middle; background-color: ${tdFondo}; transition: background-color 0.3s;">
+                <td style="padding: 15px; vertical-align: middle;">
                     <span style="
                         padding: 5px 12px;
                         border-radius: 20px;
@@ -426,11 +445,10 @@ function convertirNumeroALetras(num) {
                     </span>
                 </td>
                 <td style="padding: 15px; text-align: right; vertical-align: middle;">
-                    <button onclick="gestionarClicEmpleado('${empleado.cedula}')" class="btn-gestionar">
-                        <span style="margin-right: 6px;">📄</span> Gestionar
-                    </button>
+                    ${btnGestionar}
                 </td>
             `;
+
             tbody.appendChild(fila);
         });
     }
