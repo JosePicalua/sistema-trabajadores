@@ -1873,7 +1873,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
     const cantidadMeses = inputMeses.value;
     const valorMensual = limpiarNumero(inputMensual.value);
     const valorMensualFormateado = formatearNumero(valorMensual);
-    const fechaFinalLaboral = fechaFinalLaboralInput ? fechaALetraYNumero(fechaFinalLaboralInput) : "";
+    const fechaInicioLaboralInput = document.getElementById('fechaInicioLaboral').value;
     const {
         numeroContrato,
         fechaContrato,        // "28 DE ENERO DE 2026"
@@ -1979,7 +1979,7 @@ async function generarActaDeInicio(supervisora, datosContrato, carpetaId) {
         // Fila 13
         new docx.TableRow({ children: [
             crearCelda("FECHA DE INICIO",   { bold: true, ancho: 3500 }),
-            crearCelda(fechaFinalLaboral,                { ancho: 6860 }),
+            crearCelda(fechaInicioLaboralInput,                { ancho: 6860 }),
         ]}),
     ];
 
