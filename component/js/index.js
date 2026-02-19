@@ -1315,6 +1315,9 @@ function abrirModalSupervisor(datosContrato, carpetaId) {
     _datosContratoActual = datosContrato;
     document.getElementById('modalSupervisor').style.display = 'block';
 }
+
+
+
 document.getElementById('btnGenerarResolucion')?.addEventListener('click', async function() {
     const supervisorId = document.getElementById('suscriptorSelect_Supervidor').value;
     if (!supervisorId) {
@@ -1848,6 +1851,7 @@ async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
         console.log("✅ Resolución subida con ID:", result.id);
         mostrarMensaje(`✔️ ¡Resolución de supervisor generada y subida a Drive!`, 'success');
         mostrarMensaje(`✔️ ¡Resolución de Idoneidad y Experiencia generada y subida a Drive!`, 'success');
+        mostrarMensaje(`✔️ ¡Resolución de Certificado No Existencia generada y subida a Drive!`, 'success');
     } else {
         throw new Error(result.error?.message || "Error subiendo resolución");
     }
