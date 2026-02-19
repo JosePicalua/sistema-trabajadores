@@ -1707,6 +1707,115 @@ async function generarIdoneidadYExperiencia(supervisora, dataosContrato, carpeta
 }
 
 
+async function generarCertificadoNoExistencia(supervisora, dataosContrato, carpetaId) {
+    const { numeroContrato, fechaContrato, nombreContratista, cedulaContratista, objetoContrato } = dataosContrato;
+
+    const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
+
+    // ✅ CORRECCIÓN 1: Se declaró con "const" (era una variable global implícita sin declaración)
+    const parrafos = [
+        new docx.Paragraph({
+            children:[
+                new docx.TextRun({ text: 'LA SUSCRITA SECRETARIA ADMINISTRATIVA Y FINANCIERA CON FUNCIONES DE TALENTO HUMANO DEL MUNICIPIO DE EL BANCO MAGDALENA ', bold: true, size: 24, font: "Arial"})
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children:[ 
+                new docx.TextRun({ text: 'En cumplimiento a lo establecido por el artículo 3, del Decreto 1737 de 1998, modificado por artículo 1 del Decreto 2209 del de 1998,', size: 24, font: "Arial"}),
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children:[
+                new docx.TextRun({ text: 'CERTIFICA', bold: true, size: 24, font: "Arial"}),
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children:[
+                new docx.TextRun({ text: 'Que no existe, es insuficiente o no está en capacidad el personal de planta o de nómina de la Alcaldía municipal de El Banco, Magdalena, para la "', size: 24, font: "Arial"}),
+                new docx.TextRun({ text: objetoContrato, bold: true, size: 24, font: "Arial"}),
+                new docx.TextRun({ text: '". Así mismo que dentro del plan de anual de adquisiciones del año 2026, se encuentra incluida la contratación del personal para la prestación del servicio en mención.', size: 24, font: "Arial"}),
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children:[
+                new docx.TextRun({ text: 'Se entiende que no existe el personal de planta cuando es imposible atender la actividad con personal de planta, porque de acuerdo con los manuales específicos no existe personal que pueda desarrollar la actividad para la cual se requiere contratar la prestación del servicio o cuando el desarrollo de la actividad requiera un grado de especialización que implica la contratación del servicio, aun existiendo personal en la planta este no sea suficiente.', size: 24, font: "Arial"}),
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children:[
+                // ✅ CORRECCIÓN 2: Primer TextRun sin size ni font → añadidos para consistencia
+                new docx.TextRun({ text: 'Dada en El Banco, Magdalena a los ', size: 24, font: "Arial"}),
+                new docx.TextRun({ text: fechaContrato, size: 24, font: "Arial"}),
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+    // ✅ CORRECCIÓN 3: Se eliminó la coma y el cierre "]," que cortaba el bloque del array
+    // y mezclaba el código de sectionConfig dentro del array de párrafos, causando SyntaxError
+    ];
+
+    // ── SECCIÓN CONFIG ──
+    let sectionConfig = {
+        properties: {
+            page: {
+                size: { width: 12240, height: 20160 },
+                margin: { top: 2880, right: 1440, left: 1440, bottom: 4320 }
+            }
+        },
+        children: parrafos
+    };
+
+    // ── MARCA DE AGUA ──
+    if (imagenBlob) {
+        try {
+            const marcaDeAgua = new docx.ImageRun({
+                data: imagenBlob,
+                transformation: { width: 816, height: 1293 },
+                floating: {
+                    horizontalPosition: {
+                        relative: docx.HorizontalPositionRelativeFrom.PAGE,
+                        align: docx.HorizontalPositionAlign.CENTER
+                    },
+                    verticalPosition: {
+                        relative: docx.VerticalPositionRelativeFrom.PAGE,
+                        offset: 0
+                    },
+                    behindDocument: true,
+                },
+            });
+            sectionConfig.headers = {
+                default: new docx.Header({
+                    children: [new docx.Paragraph({ children: [marcaDeAgua] })]
+                })
+            };
+        } catch (error) {
+            console.error('❌ Error marca de agua:', error);
+        }
+    }
+
+    const doc = new docx.Document({ sections: [sectionConfig] });
+    const blob = await docx.Packer.toBlob(doc);
+    // ── SUBIR A LA MISMA CARPETA DEL CONTRATO ──
+    const nombreArchivo = `CertificadoNoExistencia_${numeroContrato}_${nombreContratista.replace(/\s+/g, '_')}.docx`;
+    await subirArchivoACarpeta(blob, nombreArchivo, carpetaId);
+}
+
+
 
 // ==================== SUBIR ARCHIVO A CARPETA YA EXISTENTE ====================
 async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
