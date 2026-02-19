@@ -1315,7 +1315,6 @@ function abrirModalSupervisor(datosContrato, carpetaId) {
     _datosContratoActual = datosContrato;
     document.getElementById('modalSupervisor').style.display = 'block';
 }
-
 document.getElementById('btnGenerarResolucion')?.addEventListener('click', async function() {
     const supervisorId = document.getElementById('suscriptorSelect_Supervidor').value;
     if (!supervisorId) {
@@ -1330,14 +1329,15 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
     }
 
     const textoOriginal = this.innerHTML;
-    this.innerHTML = '⏳ Generando resolución...';
+    this.innerHTML = '⏳ Generando documentos...';
     this.disabled = true;
 
     try {
         await generarResolucionSupervisor(supervisora, _datosContratoActual, _carpetaIdActual);
-        limpiarYcerrar(); // ← aquí, todo limpio al final
+        await generarIdoneidadYExperiencia(supervisora, _datosContratoActual, _carpetaIdActual);
+        limpiarYcerrar();
     } catch (error) {
-        console.error('❌ Error generando resolución:', error);
+        console.error('❌ Error generando documentos:', error);
         mostrarMensaje('❌ Error: ' + error.message, 'error');
     } finally {
         this.innerHTML = textoOriginal;
@@ -1696,7 +1696,7 @@ async function generarIdoneidadYExperiencia(supervisora, dataosContrato, carpeta
     const blob = await docx.Packer.toBlob(doc);
 
     // ── SUBIR A LA MISMA CARPETA DEL CONTRATO ──
-    const nombreArchivo = `Resolucion_Supervisor_${numeroContrato}_${nombreContratista.replace(/\s+/g, '_')}.docx`;
+    const nombreArchivo = `Resolucion_IdoneidadYExperiencia_${numeroContrato}_${nombreContratista.replace(/\s+/g, '_')}.docx`;
     await subirArchivoACarpeta(blob, nombreArchivo, carpetaId);
                 
 }
