@@ -1561,6 +1561,146 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
     await subirArchivoACarpeta(blob, nombreArchivo, carpetaId);
 }
 
+// =================== CREACION DE WORD PARA 
+async function generarIdoneidadYExperiencia(supervisora, dataosContrato, carpetaId) {
+    const { numeroContrato, fechaContrato, nombreContratista, cedulaContratista, valorLetras, valorTotal, objetoContrato } = dataosContrato;
+
+    const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
+
+    parrafos = [
+        new docx.Paragraph({
+            children:[
+                new docx.TextRun({ text: 'CONSTANCIA DE IDONEIDAD Y EXPERIENCIA', bold: true, size: 24, font: "Arial"})
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children:[ 
+                new docx.TextRun({ text: 'Teniendo en cuenta lo dispuesto en el Articulo 2.2.1.2.1.4.9 del Decreto 1082 de 26 de mayo de 2015, el perfil señalado en el estudio de conveniencia y oportunidad respecto a la persona natural o jurídica que se requiere para desarrollar el objeto contractual consistente en:', size: 24, font: "Arial"}),
+                // ✅ CORRECCIÓN 1: "new docx.textContent" no existe → reemplazado por "new docx.TextRun"
+                new docx.TextRun({ text: objetoContrato, bold: true, size: 24, font: "Arial"}), 
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            // ✅ CORRECCIÓN 2: Faltaban los dos puntos ":" después de "spacing"
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children:[
+                new docx.TextRun({ text: 'Ante lo cual me permito certificar que Previo el Estudio y Evaluación realizado a la hoja de vida de ', size: 24, font: "Arial"}),
+                // ✅ CORRECCIÓN 3: Los primeros TextRun del párrafo no tenían "size" ni "font" definidos
+                new docx.TextRun({ text: nombreContratista, bold: true, size: 24, font: "Arial"}),
+                new docx.TextRun({ text: ' identificado con cédula de ciudadanía No ', size: 24, font: "Arial"}),
+                new docx.TextRun({ text: cedulaContratista, bold: true, size: 24, font: "Arial"}),
+                new docx.TextRun({ text: ' de El Banco, Magdalena, esta persona posee la idoneidad y experiencia suficientes para suplir la necesidad del servicio.', size: 24, font: "Arial"})
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            // ✅ CORRECCIÓN 4: Faltaban los dos puntos ":" después de "spacing"
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children:[
+                new docx.TextRun({ text: 'Dada en El Banco, Magdalena a los .', bold: true, size: 24, font: "Arial"}),
+                new docx.TextRun({ text: fechaContrato, size: 24, font: "Arial"}),
+            ],
+            alignment: docx.AlignmentType.JUSTIFIED,
+            // ✅ CORRECCIÓN 5: Faltaba la coma "," de cierre del objeto "spacing" (era una propiedad suelta)
+            spacing: { after: 240, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+        
+        // ── FIRMAS ──
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Firmado en original", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+                
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 360, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+        new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "ISOLINA ALICIA VIDES MARTINEZ", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+
+            ],
+            spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+         new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "SECRETARIA ADMINISTRATIVA Y FINANCIERA", bold: true, size: 24, font: "Arial", color: "FF0000" }),
+
+            ],
+            tabStops: [
+                { type: docx.TabStopType.CENTER, position: 2340 },
+
+            ],
+            spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
+        }),
+
+    ];
+
+    // ── SECCIÓN CONFIG ──
+    let sectionConfig = {
+        properties: {
+            page: {
+                size: { width: 12240, height: 20160 },
+                margin: { top: 2880, right: 1440, left: 1440, bottom: 4320 }
+            }
+        },
+        children: parrafos
+    };
+
+    // ── MARCA DE AGUA ──
+    if (imagenBlob) {
+        try {
+            const marcaDeAgua = new docx.ImageRun({
+                data: imagenBlob,
+                transformation: { width: 816, height: 1293 },
+                floating: {
+                    horizontalPosition: {
+                        relative: docx.HorizontalPositionRelativeFrom.PAGE,
+                        align: docx.HorizontalPositionAlign.CENTER
+                    },
+                    verticalPosition: {
+                        relative: docx.VerticalPositionRelativeFrom.PAGE,
+                        offset: 0
+                    },
+                    behindDocument: true,
+                },
+            });
+            sectionConfig.headers = {
+                default: new docx.Header({
+                    children: [new docx.Paragraph({ children: [marcaDeAgua] })]
+                })
+            };
+        } catch (error) {
+            console.error('❌ Error marca de agua:', error);
+        }
+    }
+
+    const doc = new docx.Document({ sections: [sectionConfig] });
+    const blob = await docx.Packer.toBlob(doc);
+
+    // ── SUBIR A LA MISMA CARPETA DEL CONTRATO ──
+    const nombreArchivo = `Resolucion_Supervisor_${numeroContrato}_${nombreContratista.replace(/\s+/g, '_')}.docx`;
+    await subirArchivoACarpeta(blob, nombreArchivo, carpetaId);
+                
+}
+
 
 
 // ==================== SUBIR ARCHIVO A CARPETA YA EXISTENTE ====================
