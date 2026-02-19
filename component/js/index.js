@@ -572,7 +572,7 @@ const supervisoresData = {
 };
 
 const objetosContrato = {
-    "1": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERO - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDÍA MUNICIPAL DE EL BANCO, MAGDALENA",
+    "1": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERO",
     "2": "OTRO OBJETO DE CONTRATO"
 };
 
@@ -643,6 +643,59 @@ const clausulas = {
         "CLÁUSULA CUARTA - FORMA DE PAGO:": "Otra forma de pago."
     }
 };
+
+
+const estudioPrevio = {
+    "1": {
+        titulo: "ESTUDIOS PREVIOS",
+        secciones: [
+            {
+                numero: "1",
+                titulo: "DESCRIPCIÓN DE LA NECESIDAD QUE LA ENTIDAD PRETENDE SATISFACER",
+                parrafos: [
+                    "En desarrollo de lo señalado en los numerales 7 y 12 del Artículo 25 de la Ley 80 de 1993 (modificado por el artículo 87 de la Ley 1474 de 2011) y el Artículo 2.2.1.1.2.1.1 del Decreto 1082 de 2015, los estudios y documentos previos son el soporte para elaborar el proyecto de pliego, los pliegos de condiciones, el contrato y estarán conformados por los documentos definitivos que sirvan de soporte para la contratación",
+                    "La alcaldía del municipio de El Banco Magdalena cuenta con una infraestructura propia compuesta por diferentes dependencias donde funcionan los despachos y oficina en las cuales se ejecutan labores propias de la misión institucional del ente municipal, las cuales requieren de un auxiliar administrativo, que cumpla con las labores de mensajería en dichas dependencias.",
+                    "Que analizado lo anterior y considerando que la Administración Municipal no cuenta con personal de planta suficiente e idóneo para desarrollar esta labor, motivo por el cual amparados en lo establecido en el literal d) del numeral 1° del artículo 24 de la Ley 80 de 1993, al numeral 4, del artículo 2, de la ley 1150 de 2007 y el Artículo 2.2.1.2.1.4.9 del Decreto 1082 de 2015, se elaboró el respectivo estudio de justificación y conveniencia el cual determino la necesidad de contratar en forma directa mediante la celebración de un contrato de Prestación de Servicios de Apoyo a la gestión.",
+            ]
+            },                         // ← cierra objeto sección 1
+            {  
+                numero: "2",
+                    titulo: "DESCRIPCION DEL OBJETO A CONTRATAR CON SUS ESPECIFICACIONES ",
+                    parrafos: [
+                        "PRESTACION DE SERVICIOS PROFESIONALES Y DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERIA - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDIA MUNICIPAL DE EL BANCO, MAGDALENA. ",
+                        "CLASIFICACION DEL SERVICIO: CODIGO UNSPSC 80111620.",
+                        "El alcance del objeto:  1. Realizar labores de mensajería en los diferentes procesos que se ejecuten en las diferentes dependencias de la alcaldía municipal. 2. Redactar y preparar oficios, citaciones y texto en general en cumplimiento de los objetivos de las oficinas para darles el respectivo tramite. 3. Velar por la custodia de la información y documentos que por razón de las actividades realizadas tengan bajo su cuidado y mantener la reserva de la misma. 4. Llevar en forma correcta actualizada y de acuerdo con las instrucciones recibidas, el archivo de los documentos que se han encomendado aplicado a demás, las normas generales de archivo. 5. Responder y velar por el uso y mantenimiento de los bienes y elementos entregados por el municipio para el ejercicio de las actividades. 6. Mantener el orden y presentación de la oficina a su cargo. 7. Las demás que se requieran en razón de la ejecución del servicio y las demás que sean asignada por el supervisor del contrato.",
+                    ]
+            },                         // ← cierra objeto sección 2
+            {
+                numero: "3",
+                titulo: "MODALIDAD DE SELECCIÓN DEL CONTRATISTA Y SU JUSTIFICACIÓN: ",
+                parrafos: [
+                    " En el numeral 1 del artículo 2 de la Ley 1150 de 2007, se establece que por regla general la escogencia del contratista se efectuará a través de licitación pública, con las excepciones que señalan en los numerales 2, 3 y 4, es decir, selección abreviada, concurso de méritos y contratación directa.   En el literal “h” del numeral 4 del artículo 2 de la Ley 1150 de 2007 señala como causal de contratación directa: “h) Para la prestación de servicios profesionales y de apoyo a la gestión, o para la ejecución de trabajos artísticos que sólo  puedan encomendarse a determinadas personas naturales;”",
+                    "El Artículo 2.2.1.2.1.4.9 del decreto 1082 de 2015 consagra: Contratos de prestación de servicios profesionales y de apoyo a la gestión, o para la ejecución de trabajos artísticos que solo pueden encomendarse a determinadas personas naturales.  Por lo anterior, el municipio de El Banco, Magdalena para adelantar la presente contratación tuvo en cuenta el perfil del personal, su experiencia para el desarrollo del objeto contractual acreditada a través de su hoja de vida; así como la certeza que la entidad no cuenta con personal suficiente para llevar a cabo las funciones a encomendar planteadas en el presente estudio.",
+                    "En este caso, no es necesario que la entidad estatal haya obtenido previamente varias ofertas, de lo cual el ordenador del gasto debe dejar constancia escrita.  Los servicios profesionales y de apoyo a la gestión corresponden a aquellos de naturaleza intelectual diferentes a los de consultoría que se derivan del cumplimiento de las funciones de la entidad estatal, así como los relacionados con actividades operativas, logísticas, o asistenciales.",
+                    "Se trata de un contrato de prestación de servicios profesionales, por cuanto dicho objeto contractual solo puede ser desarrollado por un profesional en contaduría pública, y su modalidad de contratación es la directa.  Igualmente, el marco legal del presente contrato está conformado por la Constitución Política y las demás disposiciones civiles y  comerciales que le sean aplicables",
+                ]
+            },
+            {
+                numero: "4",
+                titulo: "4. PLAZO DE EJECUCIÓN – VALOR ESTIMADO – FORMA DE PAGO – LUGAR DE EJECUCION DEL CONTRATO:",
+                parrafos: [
+                    "El plazo de ejecución del presente contrato será de [VALOR_MESES] meses, contados a partir de la suscripción del presente contrato. El valor del contrato asciende a la suma de NUEVE MILLONES DOSCIENTOS CINCUENTA MIL PESOS M/CTE ($ 9.250.000), incluyendo costos directos e indirectos que ocasione la ejecución del contrato. El valor total del contrato será cancelado en cinco cuotas mensuales vencidas, por valor de $ 1.850.000 cada una, previo informe de actividades, pago a su seguridad social y recibido de conformidad por parte del Supervisor del Contrato. El lugar de ejecución del presente contrato es en el Municipio de El Banco – Magdalena.",
+                    "",
+                ]
+            }
+        ]
+    
+    },
+    "2": { "":"",
+        "":"",
+        "":"",
+        "":"",
+        // otro tipo de contrato con sus propias secciones
+    }
+};
+
 
 
 
