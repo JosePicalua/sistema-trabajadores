@@ -311,15 +311,8 @@ function convertirNumeroALetras(num) {
 
 
     function gisLoaded() {
-        // Intentar obtener CLIENT_ID de cookie si aún no está en memoria
-        if (!CLIENT_ID) {
-            CLIENT_ID = API_CONFIG.getClientId();
-        }
-
-        if (!CLIENT_ID) {
-            console.warn('⚠️ CLIENT_ID no disponible aún');
-            return;
-        }
+        if (!CLIENT_ID) CLIENT_ID = API_CONFIG.getClientId();
+        if (!CLIENT_ID) { console.warn('⚠️ CLIENT_ID no disponible'); return; }
 
         tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: CLIENT_ID,
@@ -328,7 +321,24 @@ function convertirNumeroALetras(num) {
         });
 
         gisInited = true;
-        console.log('✓ Google Identity Services inicializado con CLIENT_ID:', CLIENT_ID);
+        console.log('✓ GIS listo');
+
+        // ✅ Intentar autenticación silenciosa al cargar
+        intentarAuthSilenciosa();
+    }
+
+    // ── Intenta obtener token sin popup ──
+    function intentarAuthSilenciosa() {
+        tokenClient.callback = (resp) => {
+            if (resp.error) {
+                console.warn('⚠️ Auth silenciosa falló, se necesitará popup manual:', resp.error);
+                // No hacer nada — esperará a que el usuario genere documentos
+            } else {
+                console.log('✅ Token renovado silenciosamente');
+            }
+        };
+        // prompt: '' intenta sin popup, si hay sesión activa de Google funciona solo
+        tokenClient.requestAccessToken({ prompt: '' });
     }
 
     // ==================== CARGAR DATOS ====================
@@ -887,6 +897,45 @@ function ocultarLoader() {
     document.getElementById('loaderDrive').style.display = 'none';
 }
 
+
+// ==================== AUTH SILENCIOSA ====================
+function guardarHintCuenta(email) {
+    document.cookie = `google_account_hint=${encodeURIComponent(email)}; max-age=31536000; path=/; SameSite=Strict`;
+}
+
+function obtenerHintCuenta() {
+    const match = document.cookie.match(/(?:^|; )google_account_hint=([^;]*)/);
+    return match ? decodeURIComponent(match[1]) : null;
+}
+
+async function garantizarToken() {
+    return new Promise((resolve, reject) => {
+        const tokenActual = gapi.client.getToken();
+
+        // Si ya hay token válido, no hace nada
+        if (tokenActual && tokenActual.access_token) {
+            resolve();
+            return;
+        }
+
+        // Sin token — intentar silencioso con hint guardado
+        tokenClient.callback = (resp) => {
+            if (resp.error) {
+                reject(new Error('Error de autenticación: ' + resp.error));
+            } else {
+                resolve();
+            }
+        };
+
+        tokenClient.requestAccessToken({
+            prompt: '',
+            login_hint: obtenerHintCuenta() || ''
+        });
+    });
+}
+
+
+
 // DESPUÉS (sin el parámetro sectionConfig):
 async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContrato, objetoId) {
     console.log('✅ Generando contrato para:', nombre);
@@ -1248,48 +1297,49 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
 
     // 9. Crear el documento binario
     // ... dentro de generarContratoEmpleado ...
-    mostrarLoader("⚙️ Generando documento DOCX..."); // Inicio del proceso
+    // 9. Crear el documento binario
+mostrarLoader("⚙️ Generando documento DOCX...");
 
-    // Verificar que esté todo inicializado
-    if (!gapiInited || !gisInited) {
-        mostrarMensaje("❌ Error: APIs de Google no inicializadas", "error");
-        console.error("gapiInited:", gapiInited, "gisInited:", gisInited);
-        ocultarLoader();
-        return;
-    }
+const doc = new docx.Document({ sections: [sectionConfig] });
+const blob = await docx.Packer.toBlob(doc);
 
-    const doc = new docx.Document({
-        sections: [sectionConfig]
-    });
+const FOLDER_ID_PADRE = '1CfgEKvzu9CEBXokHiOuATEYXYLuEp8Ls';
 
-    const blob = await docx.Packer.toBlob(doc);
+// ✅ REEMPLAZA el try/catch que tenías antes por este:
+mostrarLoader("🔑 Verificando autenticación...");
 
-    try {
-        const FOLDER_ID_PADRE = '1CfgEKvzu9CEBXokHiOuATEYXYLuEp8Ls';
-
-        if (gapi.client.getToken() === null) {
-            mostrarLoader("🔑 Solicitando permiso de Google Drive...");
-            
-            tokenClient.callback = async (resp) => {
-                if (resp.error !== undefined) {
-                    ocultarLoader();
-                    console.error("Error OAuth:", resp);
-                    mostrarMensaje("❌ Error de autorización: " + resp.error, "error");
-                    return;
+try {
+    await garantizarToken();
+    await ejecutarSubidaDrive(nombre, blob, numeroContrato, FOLDER_ID_PADRE);
+} catch (err) {
+    if (err.message.includes('autenticación')) {
+        mostrarLoader("🔑 Solicitando permiso de Google Drive...");
+        tokenClient.callback = async (resp) => {
+            if (resp.error) {
+                ocultarLoader();
+                mostrarMensaje("❌ Error de autorización: " + resp.error, "error");
+                return;
+            }
+            // ✅ Guardar hint de cuenta para futuras auth silenciosas
+            try {
+                const userInfo = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { Authorization: `Bearer ${gapi.client.getToken().access_token}` }
+                }).then(r => r.json());
+                if (userInfo.email) {
+                    guardarHintCuenta(userInfo.email);
+                    console.log('✅ Cuenta guardada:', userInfo.email);
                 }
-                await ejecutarSubidaDrive(nombre, blob, numeroContrato, FOLDER_ID_PADRE);
-            };
-            
-            tokenClient.requestAccessToken({ prompt: 'consent' });
-        } else {
+            } catch(e) {
+                console.warn('No se pudo guardar hint de cuenta');
+            }
             await ejecutarSubidaDrive(nombre, blob, numeroContrato, FOLDER_ID_PADRE);
-        }
-
-    } catch (err) {
+        };
+        tokenClient.requestAccessToken({ prompt: 'select_account' }); // ← NO usar 'consent'
+    } else {
         ocultarLoader();
-        console.error("Error general:", err);
-        mostrarMensaje("❌ Error: " + (err.message || "Error desconocido"), "error");
+        mostrarMensaje("❌ Error: " + err.message, "error");
     }
+}
 
     // Función auxiliar mejorada con Loader
     async function ejecutarSubidaDrive(nombre, blob, numeroContrato, folderPadreId) {
