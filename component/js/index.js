@@ -1796,7 +1796,7 @@ async function generarIdoneidadYExperiencia(supervisora, dataosContrato, carpeta
 
         new docx.Paragraph({
             children:[
-                new docx.TextRun({ text: 'Dada en El Banco, Magdalena a los .', bold: true, size: 24, font: "Arial"}),
+                new docx.TextRun({ text: 'Dada en El Banco, Magdalena a los. ', bold: true, size: 24, font: "Arial"}),
                 new docx.TextRun({ text: fechaContrato, size: 24, font: "Arial"}),
             ],
             alignment: docx.AlignmentType.JUSTIFIED,
@@ -2379,7 +2379,7 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
                 new docx.Paragraph({
                     children: [
                         new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                        new docx.TextRun({ text: supervisora.nombre.toUpperCase(), bold: true, size: 24, font: "Arial" }),
+                        new docx.TextRun({ text: supervisora.titular.toUpperCase(), bold: true, size: 24, font: "Arial" }),
                     ],
                     tabStops: [{ type: docx.TabStopType.CENTER, position: 2340 }],
                     spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
