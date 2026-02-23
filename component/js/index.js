@@ -1672,7 +1672,6 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
                 new docx.TextRun({ text: "Firmado en original", bold: true, size: 24, font: "Arial", color: "FF0000" }),
             ],
             tabStops: [
-                { type: docx.TabStopType.CENTER, position: 2340 },
                 { type: docx.TabStopType.CENTER, position: 7020 },
             ],
             alignment: docx.AlignmentType.CENTER,
@@ -1685,7 +1684,6 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
                 new docx.TextRun({ text: nombreContratista.toUpperCase(), bold: true, size: 24, font: "Arial" }),
             ],
             tabStops: [
-                { type: docx.TabStopType.CENTER, position: 2340 },
                 { type: docx.TabStopType.CENTER, position: 7020 },
             ],
             spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
@@ -1695,12 +1693,9 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
 
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "Supervisora Designada", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: "Contratista", size: 24, font: "Arial" }),
             ],
             tabStops: [
-                { type: docx.TabStopType.CENTER, position: 2340 },
                 { type: docx.TabStopType.CENTER, position: 7020 },
             ],
             spacing: { after: 120, line: 240, lineRule: docx.LineRuleType.AUTO }
