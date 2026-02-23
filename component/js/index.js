@@ -1681,7 +1681,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
         new docx.Paragraph({
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: nombreContratista.toUpperCase(), bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: supervisora.nombre.toUpperCase(), bold: true, size: 24, font: "Arial" }),
             ],
             tabStops: [
                 { type: docx.TabStopType.CENTER, position: 7020 },
@@ -1693,7 +1693,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
 
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "Contratista", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Supervisora Designada", size: 24, font: "Arial" }),
             ],
             tabStops: [
                 { type: docx.TabStopType.CENTER, position: 7020 },
