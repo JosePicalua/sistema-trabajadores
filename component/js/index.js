@@ -594,17 +594,20 @@ const supervisoresData = {
     "1": { 
         nombre:    "RONALD DARIO FLOREZ SIERRA", 
         documento: "85.271.959",
-        cedula:    "85.271.959"       // ← añade cedula igual a documento
+        cedula:    "85.271.959" ,
+        cargo:      "Alcalde Municipal"      // ← añade cedula igual a documento
     },
     "2": { 
         nombre:    "GERALDINES GONZALEZ CERVANTES", 
         documento: "1.085.096.299",
-        cedula:    "1.085.096.299"    // ← añade cedula igual a documento
+        cedula:    "1.085.096.299" ,
+        cargo:      "Alcalde Municipal"   // ← añade cedula igual a documento
     },
     "3": { 
-        nombre:    "Supervisor 3", 
-        documento: "000.000.000",
-        cedula:    "000.000.000"
+        nombre:    "ISOLINA ALICIA VIDES MARTINEZ", 
+        documento: "1.234.567.890",
+        cedula:    "1.234.567.890",
+        cargo:     "SECRETARIA ADMINISTRATIVA Y FINANCIERA"
     }
 };
 
@@ -1626,7 +1629,9 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
                 new docx.TextRun({ text: nombreContratista, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: ", identificado con cédula de ciudadanía No ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: cedulaContratista, bold: true, size: 24, font: "Arial" }),
-                new docx.TextRun({ text: " de El Banco, Magdalena, a la Secretaria Administrativa y Financiera Municipal, la cual en este momento se encuentra en cabeza de la  doctor@ ", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: " de El Banco, Magdalena, a la", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: supervisora.cargo, bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "la cual en este momento se encuentra en cabeza de la  doctor@ ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.nombre, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: ", identificada con la cédula de ciudadanía No ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.cedula, bold: true, size: 24, font: "Arial" }),
@@ -1658,7 +1663,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
 
         new docx.Paragraph({
             children: [
-                new docx.TextRun({ text: `Dado en El Banco, Magdalena, a los ${fechaContrato.split(' ')[0]} de ${fechaContrato.split(' ')[1]} de 2026.`, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: `Dado en El Banco, Magdalena, a los de ${fechaContrato.split(' ')[1]} de 2026.`, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: fechaContrato, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: ", en original.", size: 24, font: "Arial" }),
             ]}),
