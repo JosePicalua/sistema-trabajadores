@@ -1631,7 +1631,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
                 new docx.TextRun({ text: cedulaContratista, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: " de El Banco, Magdalena, al ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.cargo, bold: true, size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "la cual en este momento se encuentra en cabeza de la  doctor@ ", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: " la cual en este momento se encuentra en cabeza de la  doctor@ ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.nombre, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: ", identificada con la cédula de ciudadanía No ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.cedula, bold: true, size: 24, font: "Arial" }),
@@ -2368,7 +2368,7 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
 
     // ── ITERAR SECCIONES ──
     estudioSeleccionado.secciones.forEach((seccion, index) => {
-        console.log(`📄 Procesando sección ${index}:`, seccion);
+        console.log(`📄 Sección ${index}:`, JSON.stringify(seccion));
 
         // ✅ GUARD 1: sección de firma (no tiene numero ni parrafos array)
         if (seccion.firma) {
