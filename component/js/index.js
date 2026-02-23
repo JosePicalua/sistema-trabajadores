@@ -612,7 +612,7 @@ const supervisoresData = {
 };
 
 const objetosContrato = {
-    "1": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERO - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDIA MUNICIPAL DE EL BANCO",
+    "1": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERO - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDÍA  MUNICIPAL DE EL BANCO",
     "2": "OTRO OBJETO DE CONTRATO"
 };
 
@@ -624,7 +624,7 @@ const clausulas = {
     "1": {
         "CLÁUSULA PRIMERA - DEFINICIONES:": "Los términos definidos son utilizados en singular y en plural de acuerdo con el contexto en el cual son utilizados. Otros términos utilizados con mayúscula inicial deben ser entendidos de acuerdo con la definición contenida en el Decreto 1082 de 2015. Los términos no definidos en los documentos referenciados o en la presente cláusula, deben entenderse de acuerdo con su significado natural y obvio.",
         
-        "CLÁUSULA SEGUNDA - OBJETO DEL CONTRATO:": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERO - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDIA MUNICIPAL DE EL BANCO, MAGDALENA.",
+        "CLÁUSULA SEGUNDA - OBJETO DEL CONTRATO:": "PRESTACIÓN DE SERVICIOS DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERO - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDÍA  MUNICIPAL DE EL BANCO, MAGDALENA.",
         
         "CLÁUSULA TERCERA – ACTIVIDADES ESPECÍFICAS DEL CONTRATO:": "1. Realizar labores de mensajería en los diferentes procesos que se ejecuten o realicen las diferentes dependencias de la alcaldía municipal. 2. Redactar y preparar oficios, citaciones y texto en general en cumplimiento de los objetivos de las oficinas para darles el respectivo tramite. 3. Velar por la custodia de la información y documentos que por razón de las actividades realizadas tengan bajo su cuidado y mantener la reserva de la misma. 4. Llevar en forma correcta actualizada y de acuerdo con las instrucciones recibidas, el archivo de los documentos que se han encomendado aplicado a demás, las normas generales de archivo. 5. Responder y velar por el uso y mantenimiento de los bienes y elementos entregados por el municipio para el ejercicio de las actividades. 6. Mantener el orden y presentación de la oficina a su cargo. 7. Las demás que se requieran en razón de la ejecución del servicio y las demás que sean asignada por el supervisor del contrato.",
         
@@ -702,7 +702,7 @@ const estudioPrevio = {
                 numero: "2",
                     titulo: "DESCRIPCIÓN DEL OBJETO A CONTRATAR CON SUS ESPECIFICACIONES ",
                     parrafos: [
-                        "PRESTACION DE SERVICIOS PROFESIONALES Y DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERIA - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDIA MUNICIPAL DE EL BANCO, MAGDALENA. ",
+                        "PRESTACION DE SERVICIOS PROFESIONALES Y DE APOYO COMO AUXILIAR ADMINISTRATIVO – MENSAJERIA - DE LAS DISTINTAS DEPENDENCIAS DE LA ALCALDÍA  MUNICIPAL DE EL BANCO, MAGDALENA. ",
                         "CLASIFICACION DEL SERVICIO: CODIGO UNSPSC 80111620.",
                         "El alcance del objeto:  1. Realizar labores de mensajería en los diferentes procesos que se ejecuten en las diferentes dependencias de la alcaldía municipal. 2. Redactar y preparar oficios, citaciones y texto en general en cumplimiento de los objetivos de las oficinas para darles el respectivo tramite. 3. Velar por la custodia de la información y documentos que por razón de las actividades realizadas tengan bajo su cuidado y mantener la reserva de la misma. 4. Llevar en forma correcta actualizada y de acuerdo con las instrucciones recibidas, el archivo de los documentos que se han encomendado aplicado a demás, las normas generales de archivo. 5. Responder y velar por el uso y mantenimiento de los bienes y elementos entregados por el municipio para el ejercicio de las actividades. 6. Mantener el orden y presentación de la oficina a su cargo. 7. Las demás que se requieran en razón de la ejecución del servicio y las demás que sean asignada por el supervisor del contrato.",
                     ]
@@ -1631,7 +1631,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
                 new docx.TextRun({ text: cedulaContratista, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: " de El Banco, Magdalena, al ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.cargo, bold: true, size: 24, font: "Arial" }),
-                new docx.TextRun({ text: " la cual en este momento se encuentra en cabeza de la  doctor@ ", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "  la cual en este momento se encuentra en cabeza de la  doctor@ ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.nombre, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: ", identificada con la cédula de ciudadanía No ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.cedula, bold: true, size: 24, font: "Arial" }),
@@ -1991,7 +1991,7 @@ async function generarCertificadoNoExistencia(supervisora, dataosContrato, carpe
          new docx.Paragraph({
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "ADJUNTAR CARGO", bold: true, size: 24, font: "Arial"}),
+                new docx.TextRun({ text: "ADMINISTRATIVA Y FINANCIER", bold: true, size: 24, font: "Arial"}),
 
             ],
             tabStops: [
