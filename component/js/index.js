@@ -2384,7 +2384,7 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
                 new docx.Paragraph({
                     children: [
                         new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                        new docx.TextRun({ text: supervisora.titular.toUpperCase(), bold: true, size: 24, font: "Arial" }),
+                        new docx.TextRun({ text: seccion.titular.toUpperCase(), bold: true, size: 24, font: "Arial" }),
                     ],
                     tabStops: [{ type: docx.TabStopType.CENTER, position: 2340 }],
                     spacing: { after: 80, line: 240, lineRule: docx.LineRuleType.AUTO }
