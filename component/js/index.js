@@ -1629,7 +1629,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
                 new docx.TextRun({ text: nombreContratista, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: ", identificado con cédula de ciudadanía No ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: cedulaContratista, bold: true, size: 24, font: "Arial" }),
-                new docx.TextRun({ text: " de El Banco, Magdalena, a la", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: " de El Banco, Magdalena, al ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.cargo, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: "la cual en este momento se encuentra en cabeza de la  doctor@ ", size: 24, font: "Arial" }),
                 new docx.TextRun({ text: supervisora.nombre, bold: true, size: 24, font: "Arial" }),
@@ -1663,7 +1663,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
 
         new docx.Paragraph({
             children: [
-                new docx.TextRun({ text: `Dado en El Banco, Magdalena, a los de ${fechaContrato.split(' ')[1]} de 2026.`, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: `Dado en El Banco, Magdalena, a los `, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: fechaContrato, bold: true, size: 24, font: "Arial" }),
                 new docx.TextRun({ text: ", en original.", size: 24, font: "Arial" }),
             ]}),
@@ -1698,7 +1698,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
 
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "Supervisora Designada", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "Designado Pendiente Hacer Aqui", size: 24, font: "Arial" }),
             ],
             tabStops: [
                 { type: docx.TabStopType.CENTER, position: 7020 },
