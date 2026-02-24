@@ -13,7 +13,7 @@ const closeModal = document.querySelector('.close');
 const modalCedula = document.getElementById('modalCedula');
 const modalNombre = document.getElementById('modalNombre');
 const btnGenerarContrato = document.getElementById('btnGenerarContrato');
-const suscriptorSelect = document.getElementById('suscriptorSelect');
+const suscriptorSelect = document.getElementById('suscriptorSelect_Supervidor');
 const numeroContratoInput = document.getElementById('numeroContratoInput');
 const objetoContratoSelect = document.getElementById('objetoContratoSelect');
 
@@ -40,7 +40,7 @@ function fechaALetraYNumero(fechaStr) {
 }
 
 // Evento para el Supervisor (Ronald)
-document.getElementById('suscriptorSelect').addEventListener('change', function() {
+document.getElementById('alcaldeSelect').addEventListener('change', function() {
     const decretoContainer = document.getElementById('decretoEncargo').closest('.form-group');
     const fechadecretoContainer = document.getElementById('fechaDecretoDesignado').closest('.form-group');
     
@@ -85,16 +85,15 @@ if (fechaInicioPresupuestal) {
     });
 }
 
-// 🔹 NUEVO: Evento para fechaInicioLaboralSelector
-const fechaInicioLaboralSelector = document.getElementById('fechaInicioLaboralSelector');
+// En el evento existente de fechaInicioLaboralSelector, agrega al final:
 if (fechaInicioLaboralSelector) {
     fechaInicioLaboralSelector.addEventListener('change', function() {
         if (this.value) {
-            const fechaConvertida = fechaALetraYNumero(this.value);
-            fechaInicioLaboral.value = fechaConvertida;
+            fechaInicioLaboral.value = fechaALetraYNumero(this.value);
         } else {
             fechaInicioLaboral.value = "";
         }
+        calcularFechaFinal(); // ← AGREGA ESTA LÍNEA
     });
 }
 
@@ -154,17 +153,35 @@ function calcularMensualidad() {
     const totalTexto = inputTotal.value;
     const mesesTexto = inputMeses.value;
     
-    // Limpiar y convertir a números
     const total = parseFloat(limpiarNumero(totalTexto)) || 0;
     const meses = parseInt(mesesTexto) || 0;
 
     if (total > 0 && meses > 0) {
         const mensual = Math.round(total / meses);
-        // Formatear el resultado con puntos de miles
         inputMensual.value = formatearNumero(mensual);
     } else {
         inputMensual.value = "";
     }
+
+    // ← AGREGA ESTO AL FINAL:
+    calcularFechaFinal();
+}
+
+function calcularFechaFinal() {
+    const fechaInicioTexto = document.getElementById('fechaInicioLaboralSelector').value;
+    const meses = parseInt(inputMeses.value) || 0;
+    const fechaFinalLaboral = document.getElementById('fechaFinalLaboral');
+
+    if (!fechaInicioTexto || meses <= 0) {
+        fechaFinalLaboral.value = "";
+        return;
+    }
+
+    const [anio, mes, dia] = fechaInicioTexto.split('-').map(Number);
+    const fechaFinal = new Date(anio, mes - 1 + meses, dia);
+    fechaFinalLaboral.value = fechaALetraYNumero(
+        `${fechaFinal.getFullYear()}-${String(fechaFinal.getMonth()+1).padStart(2,'0')}-${String(fechaFinal.getDate()).padStart(2,'0')}`
+    );
 }
 
 
@@ -588,26 +605,47 @@ window.addEventListener('click', function(event) {
     }
 });
 
-// ==================== DATOS DE SUPERVISORES, OBJETOS Y CLÁUSULAS ====================
-// ✅ UN SOLO OBJETO UNIFICADO - reemplaza ambos
-const supervisoresData = {
-    "1": { 
+
+
+const desginadoAlcalde = {
+    "1" : {
+        
         nombre:    "RONALD DARIO FLOREZ SIERRA", 
         documento: "85.271.959",
         cedula:    "85.271.959" ,
-        cargo:      "Alcalde Municipal"      // ← añade cedula igual a documento
+        cargo:      "Alcalde Municipal"  
+
     },
     "2": { 
         nombre:    "GERALDINES GONZALEZ CERVANTES", 
         documento: "1.085.096.299",
         cedula:    "1.085.096.299" ,
-        cargo:      "Alcalde Municipal"   // ← añade cedula igual a documento
+        cargo:      "Secretaria de Planeación y Obras Publicas Municipal"   // ← añade cedula igual a documento
     },
     "3": { 
         nombre:    "ISOLINA ALICIA VIDES MARTINEZ", 
         documento: "1.234.567.890",
         cedula:    "1.234.567.890",
-        cargo:     "SECRETARIA ADMINISTRATIVA Y FINANCIERA"
+        cargo:     "Secretaria Administrativa y Financiera Municipal"
+    }
+}
+
+
+// ==================== DATOS DE SUPERVISORES, OBJETOS Y CLÁUSULAS ====================
+// ✅ UN SOLO OBJETO UNIFICADO - reemplaza ambos
+const supervisoresData = {
+
+    "1": { 
+        nombre:    "GERALDINES GONZALEZ CERVANTES", 
+        documento: "1.085.096.299",
+        cedula:    "1.085.096.299" ,
+        cargo:      "Secretaria de Planeación y Obras Publicas Municipal"   // ← añade cedula igual a documento
+    },
+    "2": { 
+        nombre:    "ISOLINA ALICIA VIDES MARTINEZ", 
+        documento: "1.234.567.890",
+        cedula:    "1.234.567.890",
+        cargo:     "Secretaria Administrativa y Financiera Municipal"
     }
 };
 
@@ -802,10 +840,11 @@ async function obtenerImagenMarcaAgua(url) {
 // ==================== GENERAR CONTRATO ====================
 btnGenerarContrato.addEventListener('click', async function() {
     // Validaciones del formulario
-    if (!suscriptorSelect.value) {
-        alert('Por favor seleccione un supervisor');
+    if (!alcaldeSelect.value){
+        alert('Por favor selecciona un alcalde');
         return;
     }
+
     if (!numeroContratoInput.value.trim()) {
         alert('Por favor ingrese el número de contrato');
         return;
@@ -829,10 +868,10 @@ btnGenerarContrato.addEventListener('click', async function() {
     this.disabled = true;
 
     try {
-        await generarContratoEmpleado(
+       await generarContratoEmpleado(
             empleadoActual.nombre_completo,
             empleadoActual.cedula,
-            suscriptorSelect.value,
+            alcaldeSelect.value,
             numeroContratoInput.value.trim(),
             objetoContratoSelect.value
         );
@@ -940,9 +979,9 @@ async function garantizarToken() {
 
 
 // DESPUÉS (sin el parámetro sectionConfig):
-async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContrato, objetoId) {
+async function generarContratoEmpleado(nombre, cedula, alcaldeID, numeroContrato, objetoId) {
     console.log('✅ Generando contrato para:', nombre);
-    console.log('📋 Parámetros:', { nombre, cedula, supervisorId, numeroContrato, objetoId });
+    console.log('📋 Parámetros:', { nombre, cedula, alcaldeID, numeroContrato, objetoId });
 
 
     console.log('✅ Generando contrato para:', nombre);
@@ -978,13 +1017,15 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
         alert("La librería docx no está disponible. Por favor recarga la página.");
         return;
     }
-    
-    // 1. Obtener datos del supervisor
-    const supervisor = supervisoresData[supervisorId];
-    if (!supervisor) {
+
+    // 1. Obtener datos del designadoAlcalde
+
+    const alcalde = desginadoAlcalde[alcaldeID];
+    if (!alcalde) {
         alert("Supervisor no encontrado");
         return;
     }
+    
     
     const objetoContrato = objetosContrato[objetoId];
     if (!objetoContrato) {
@@ -1043,7 +1084,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
     // 🔹 5. DETERMINAR QUÉ TEXTO USAR SEGÚN EL SUPERVISOR
     let textoIntroductorio;
     
-    if (supervisorId === "1" && asignaciondeLider["1"]) {
+    if (alcalde === "1" && asignaciondeLider["1"]) {
         // Si es el supervisor "1", usar el texto especial de asignaciondeLider
         textoIntroductorio = [
             new docx.TextRun({ text: "Entre los suscritos a saber: ", size: 24, font: "Arial" }),
@@ -1054,9 +1095,9 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
         // Para cualquier otro supervisor, usar el texto largo con sus datos
         textoIntroductorio = [
             new docx.TextRun({ text: "Entre los suscritos a saber: ", size: 24, font: "Arial" }),
-            new docx.TextRun({ text: supervisor.nombre, bold: true, size: 24, font: "Arial" }),
+            new docx.TextRun({ text: alcalde.nombre, bold: true, size: 24, font: "Arial" }),
             new docx.TextRun({ text: ", identificada con cédula de ciudadanía No ", size: 24, font: "Arial" }),
-            new docx.TextRun({ text: supervisor.documento, bold: true, size: 24, font: "Arial" }),
+            new docx.TextRun({ text: alcalde.documento, bold: true, size: 24, font: "Arial" }),
             new docx.TextRun({ text: " de El Banco, Magdalena, en su calidad de Alcalde Municipal Encargada de El Banco, departamento del Magdalena, mediante Decreto No. ", size: 24, font: "Arial" }),
             new docx.TextRun({ text: numeroDecreto || "[NUMERO_DECRETO]", bold: true, size: 24, font: "Arial" }),
             new docx.TextRun({ text: " del ", size: 24, font: "Arial" }),
@@ -1113,7 +1154,6 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
                     fechaPresupuestal,
                     fechaInicioLaboral,
                     fechaFinalLaboral,
-                    supervisor
                 })
             ],
             alignment: docx.AlignmentType.JUSTIFIED,
@@ -1163,7 +1203,7 @@ async function generarContratoEmpleado(nombre, cedula, supervisorId, numeroContr
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
                 new docx.TextRun({ 
-                    text: supervisor.nombre.toUpperCase(), 
+                    text: alcalde.nombre.toUpperCase(), 
                     bold: true, size: 24, font: "Arial"
                 }),
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
@@ -1400,16 +1440,21 @@ try {
 
                 // ← NUEVO: guardar carpetaId y abrir modal supervisor
                 // ── DONDE LLAMAS abrirModalSupervisor ──
+                const objetoIdCapturado = objetoContratoSelect.value;
+                const alcaldeIdCapturado = document.getElementById('alcaldeSelect').value;
+
+                modal.style.display = 'none';
+
                 abrirModalSupervisor({
                     numeroContrato,
+                    alcaldeID: alcaldeIdCapturado,
                     fechaContrato: new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase(),
                     nombreContratista: nombre,
                     cedulaContratista: empleadoActual.cedula,
                     valorLetras: convertirNumeroALetras(parseInt(limpiarNumero(inputTotal.value))),
                     valorTotal: formatearNumero(limpiarNumero(inputTotal.value)),
-                    objetoContrato: objetosContrato[objetoContratoSelect.value] || "",
-                    // ✅ ESTAS 3 LÍNEAS SON LAS QUE FALTAN:
-                    tipoEstudio:   objetoContratoSelect.value,
+                    objetoContrato: objetosContrato[objetoIdCapturado] || "",
+                    tipoEstudio:   objetoIdCapturado,
                     cantidadMeses: inputMeses.value,
                     valorMensual:  limpiarNumero(inputMensual.value)
                 }, nuevaCarpetaId);  // ← pasa la carpetaId creada
@@ -1451,8 +1496,12 @@ function limpiarYcerrar() {
     document.getElementById('fechaDecretoDesignado').value = "";
     document.getElementById('fechaInicioLaboralSelector').value = "";  // ← añadir
     document.getElementById('fechaInicioLaboral').value = "";
-    document.getElementById('fechaFinalLaboralSelector').value = "";   // ← añadir
-    document.getElementById('fechaFinalLaboral').value = "";
+    // POR ESTO (con verificación antes de asignar):
+    const elFechaFinalSelector = document.getElementById('fechaFinalLaboralSelector');
+    if (elFechaFinalSelector) elFechaFinalSelector.value = "";
+
+    const elFechaFinal = document.getElementById('fechaFinalLaboral');
+    if (elFechaFinal) elFechaFinal.value = "";
     suscriptorSelect.value = "";
     objetoContratoSelect.value = "";
     document.getElementById('suscriptorSelect_Supervidor').value = ""; // ← usar getElementById
@@ -1498,7 +1547,6 @@ function abrirModalSupervisor(datosContrato, carpetaId) {
 }
 
 
-
 document.getElementById('btnGenerarResolucion')?.addEventListener('click', async function() {
     const supervisorId = document.getElementById('suscriptorSelect_Supervidor').value;
     if (!supervisorId) {
@@ -1512,26 +1560,30 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
         return;
     }
 
+    const alcaldeID = _datosContratoActual.alcaldeID; // ← LEER DESDE _datosContratoActual
+    const alcalde = desginadoAlcalde[alcaldeID];
+    if (!alcalde) {
+        alert('Alcalde no encontrado');
+        return;
+    }
+
     const textoOriginal = this.innerHTML;
     this.innerHTML = '⏳ Generando documentos...';
     this.disabled = true;
 
     try {
-        await generarResolucionSupervisor(supervisora, _datosContratoActual, _carpetaIdActual);
+        await generarResolucionSupervisor(alcalde, supervisora, _datosContratoActual, _carpetaIdActual);
         await generarIdoneidadYExperiencia(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarCertificadoNoExistencia(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarActaDeInicio(supervisora, _datosContratoActual, _carpetaIdActual);
         await generarEstudiosPrevios(supervisora, _datosContratoActual, _carpetaIdActual);
 
-        // ✅ NUEVO: actualizar columna C con el estado "Documentos Generados"
         await actualizarEstadoEnSheets(
             _datosContratoActual.cedulaContratista,
             "Documentos Generados"
         );
 
-        // ✅ NUEVO: recargar la tabla para reflejar el nuevo estado visualmente
         await cargarDatosGoogleSheets();
-
         limpiarYcerrar();
     } catch (error) {
         console.error('❌ Error generando documentos:', error);
@@ -1546,7 +1598,7 @@ document.getElementById('btnGenerarResolucion')?.addEventListener('click', async
 
 
 // ==================== GENERAR RESOLUCIÓN DE SUPERVISOR ====================
-async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId) {
+async function generarResolucionSupervisor(alcalde, supervisora, datosContrato, carpetaId) {
     const { numeroContrato, fechaContrato, nombreContratista, cedulaContratista, valorLetras, valorTotal, objetoContrato } = datosContrato;
 
     const imagenBlob = await obtenerImagenMarcaAgua('component/img/marcadeaguaJURIDICA.png');
@@ -1686,7 +1738,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
         new docx.Paragraph({
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: supervisora.nombre.toUpperCase(), bold: true, size: 24, font: "Arial" }),
+                new docx.TextRun({ text: alcalde.nombre.toUpperCase(), bold: true, size: 24, font: "Arial" }),
             ],
             tabStops: [
                 { type: docx.TabStopType.CENTER, position: 7020 },
@@ -1698,7 +1750,7 @@ async function generarResolucionSupervisor(supervisora, datosContrato, carpetaId
 
             children: [
                 new docx.TextRun({ text: "\t", size: 24, font: "Arial" }),
-                new docx.TextRun({ text: "Designado Pendiente Hacer Aqui", size: 24, font: "Arial" }),
+                new docx.TextRun({ text: "ALcalde Municipal", size: 24, font: "Arial" }),
             ],
             tabStops: [
                 { type: docx.TabStopType.CENTER, position: 7020 },
@@ -2483,8 +2535,8 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
 
 
 // ==================== SUBIR ARCHIVO A CARPETA YA EXISTENTE ====================
-async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
-    mostrarLoader(`🚀 Subiendo resolución a Drive...`);
+async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId, intentosMax = 3) {
+    mostrarLoader(`🚀 Subiendo ${nombreArchivo}...`);
 
     const metadata = {
         name: nombreArchivo,
@@ -2499,24 +2551,34 @@ async function subirArchivoACarpeta(blob, nombreArchivo, carpetaId) {
     const token = gapi.client.getToken();
     if (!token || !token.access_token) throw new Error("No se pudo obtener el token de acceso");
 
-    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-        method: 'POST',
-        headers: new Headers({ 'Authorization': 'Bearer ' + token.access_token }),
-        body: form
-    });
+    // ← REINTENTOS AUTOMÁTICOS
+    for (let intento = 1; intento <= intentosMax; intento++) {
+        const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+            method: 'POST',
+            headers: new Headers({ 'Authorization': 'Bearer ' + token.access_token }),
+            body: form
+        });
 
-    const result = await res.json();
-    ocultarLoader();
+        const result = await res.json();
 
-    if (res.ok) {
-        console.log("✅ Resolución subida con ID:", result.id);
-        mostrarMensaje(`✔️ ¡Resolución de supervisor generada y subida a Drive!`, 'success');
-        mostrarMensaje(`✔️ ¡Resolución de Idoneidad y Experiencia generada y subida a Drive!`, 'success');
-        mostrarMensaje(`✔️ ¡Resolución de Certificado No Existencia generada y subida a Drive!`, 'success');
-        mostrarMensaje(`✔️ ¡Resolución de Acta de Inicio y subida a Drive!`, 'success');
-        mostrarMensaje(`✔️ ¡Resolución de Estuio Previo y subida a Drive!`, 'success');
-    } else {
-        throw new Error(result.error?.message || "Error subiendo resolución");
+        if (res.ok) {
+            ocultarLoader();
+            console.log(`✅ Subido: ${nombreArchivo} (intento ${intento})`);
+            return result;
+        }
+
+        // Si es 503 o 429 (rate limit), esperar y reintentar
+        if ((res.status === 503 || res.status === 429) && intento < intentosMax) {
+            const espera = intento * 2000; // 2s, 4s, 6s...
+            mostrarLoader(`⏳ Reintentando ${nombreArchivo} (${intento}/${intentosMax})...`);
+            console.warn(`⚠️ Error ${res.status}, reintentando en ${espera}ms...`);
+            await new Promise(r => setTimeout(r, espera));
+            continue;
+        }
+
+        // Error definitivo
+        ocultarLoader();
+        throw new Error(result.error?.message || `Error ${res.status} subiendo archivo`);
     }
 }
 
