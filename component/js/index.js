@@ -2420,7 +2420,7 @@ async function generarEstudiosPrevios(supervisora, datosContrato, carpetaId) {
 
     // ── ITERAR SECCIONES ──
     estudioSeleccionado.secciones.forEach((seccion, index) => {
-        console.log(`📄 Sección ${index}:`, JSON.stringify(seccion));
+        // console.log(`📄 Sección ${index}:`, JSON.stringify(seccion));
 
         // ✅ GUARD 1: sección de firma (no tiene numero ni parrafos array)
         if (seccion.firma) {
